@@ -15,7 +15,7 @@ public class MainController {
 	private TextField password;
 	
 	/**
-	 * @param int a
+	 * @TODO send login info to a web site
 	 */
 	public void login(ActionEvent event) {
 		
