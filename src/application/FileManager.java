@@ -5,13 +5,23 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
+
+/**
+ * TODO add a "dump" file that stores an error log
+ * 
+ * 
+ * @author louck
+ *
+ */
 public class FileManager {
 
 	// initialized repositories
@@ -19,13 +29,32 @@ public class FileManager {
 	// staged files
 	private static ArrayList<File> stage = new ArrayList<File>();
 	
-	public static void initRepository(File path) {
+	public static void initRepository() {
 		
-		if(path.isDirectory()) {
-			repositories.add(path);
+		// choose a folder
+		FileChooser fs = new FileChooser();
+		fs.getExtensionFilters().addAll(new ExtensionFilter("Folder", "*.FOLDER"));
+		
+		File repository = fs.showOpenDialog(null);
+
+		if(repository != null && repository.isDirectory()) {
+			
+			// log the file into conf.txt as a repository
+			try {
+				DataOutputStream dos =  new DataOutputStream(new FileOutputStream("conf.txt"));
+				dos.writeChars(repository.getAbsolutePath());
+				
+				dos.close();
+				
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
 		} else {
-			System.out.println("invalid file path");
-		}
+			System.err.println("Directory " + repository.getAbsolutePath() + " is not valid.");
+		}	
 	}
 	
 	/**
@@ -39,9 +68,9 @@ public class FileManager {
 	    for (int i = 0; i < repository_files.length; i++) {
 	    	
 	    	if (repository_files[i].isFile()) {
-	    		System.out.println("File " + repository_files[i].getName());
+	    		System.out.println("retrieving file: " + repository_files[i].getName());
 	    	} else if (repository_files[i].isDirectory()) {
-	    		System.out.println("Directory " + repository_files[i].getName());
+	    		System.out.println("retrieving directory: " + repository_files[i].getName());
 	    	}
 	    }
 	    
@@ -125,23 +154,19 @@ public class FileManager {
 	
 	}
 	
-	public void FileClient(String host, int port, String file) {
-		
-		Socket s;
-		
-		try {
-			s = new Socket(host, port);
-			sendFile(file, s);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}		
-	}
-	
 	public void sendFile(String file, Socket s) throws IOException {
+		
 		DataOutputStream dos = new DataOutputStream(s.getOutputStream());
 		FileInputStream fis = new FileInputStream(file);
-		byte[] buffer = new byte[4096];
 		
+		File f = new File(file);
+		// sends name of file
+		dos.writeUTF(file);
+		// sends size of file
+		dos.writeInt((int) f.length());
+		
+		// fills up the buffer on each write, then sends that buffer to client
+		byte[] buffer = new byte[8192];
 		while (fis.read(buffer) > 0) {
 			dos.write(buffer);
 		}
@@ -151,13 +176,14 @@ public class FileManager {
 	}
 	
 	public void saveFile(Socket clientSock) throws IOException {
-		// for receiving data
-		DataInputStream dis = new DataInputStream(clientSock.getInputStream());
-		// for writing data to a file
-		FileOutputStream fos = new FileOutputStream("testfile.jpg");
-		byte[] buffer = new byte[4096];
 		
-		int filesize = 15123; // Send file size in separate msg
+		DataInputStream dis = new DataInputStream(clientSock.getInputStream());
+		FileOutputStream fos = new FileOutputStream(dis.readUTF());
+		
+		byte[] buffer = new byte[8192];
+		
+		// receives size of file
+		int filesize = dis.readInt();
 		int read = 0;
 		int totalRead = 0;
 		int remaining = filesize;
