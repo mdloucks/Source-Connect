@@ -1,223 +1,313 @@
 package application;
 
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
-import java.net.Socket;
+import java.io.PrintWriter;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
 
-import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.Stage;
 
 /**
  * TODO add a "dump" file that stores an error log
  * 
+ * A general file handler that manages files stored on this computer
+ * not meant to hold any important code, just a lot of general purpose methods
  * 
  * @author louck
  *
  */
 public class FileManager {
+	
+	public FileManager() {
+		
+	}
 
 	// initialized repositories
 	private static ArrayList<File> repositories = new ArrayList<File>();
-	// staged files
-	private static ArrayList<File> stage = new ArrayList<File>();
 	
+	private static ArrayList<String> ignores = new ArrayList<String>();
+	
+	/**
+	 * open a file explorer and have the user choose a repository location
+	 * this creates a sc.conf file in this application that points to that file path
+	 * and it also creates another sc.conf file in their selected directory
+	 */
 	public static void initRepository() {
 		
-		// choose a folder
-		FileChooser fs = new FileChooser();
-		fs.getExtensionFilters().addAll(new ExtensionFilter("Folder", "*.FOLDER"));
+		System.out.println("initializing repository...");
 		
-		File repository = fs.showOpenDialog(null);
-
+		// choose a folder
+		DirectoryChooser dc = new DirectoryChooser();
+		dc.setTitle("new repository");
+		
+		File repository = dc.showDialog(null);
+		
 		if(repository != null && repository.isDirectory()) {
 			
-			// log the file into conf.txt as a repository
+			// create a configuration file at the given directory
 			try {
-				DataOutputStream dos =  new DataOutputStream(new FileOutputStream("conf.txt"));
-				dos.writeChars(repository.getAbsolutePath());
 				
-				dos.close();
+				PrintWriter pw;
+				
+				// configuration file in another folder
+				File remoteConf = new File(repository.getPath() + "/sc.conf");
+
+				// local configuration file
+				File mainConf = new File("sc.conf");
+				
+				// store the new file path in sc.conf
+				if(mainConf.exists()) {
+					
+					pw = new PrintWriter(mainConf);
+					
+					pw.println("REPOSITORY" + repository.getAbsoluteFile());
+					
+					pw.close();
+					
+				} else {
+
+					createConfig(mainConf);
+				}
+
+				// initialize remoteConf
+				pw = new PrintWriter(remoteConf);
+				pw.println("# This is the main configuration file for your Source Connect repository");
+				pw.println("# Do not change any values presented in this file, unless you are sure of your intentions.");
+				// set hidden
+				Process p = Runtime.getRuntime().exec("attrib +h " + remoteConf.getPath() + "/sc.conf");
+			    p.waitFor();
+			    System.out.println(remoteConf.getPath() + "/sc.conf");
+			    
+				
+				pw.close();
 				
 			} catch (FileNotFoundException e1) {
 				e1.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
+				
+			} catch(IOException e2) {
+				e2.printStackTrace();
+				
+			} catch (InterruptedException e3) {
+				e3.printStackTrace();
 			}
 			
 		} else {
-			System.err.println("Directory " + repository.getAbsolutePath() + " is not valid.");
+			System.err.println("Directory " + repository.getAbsolutePath() + " is invalid.");
 		}	
 	}
 	
 	/**
-	 * @param the repository of which the files you would like
-	 * @return an array of file paths
+	 * loads any relevant data from the conf folder into memory
+	 * 
+	 * 
 	 */
-	public static File[] getFiles(File repo) {
+	public static void loadConfigurations() {
 		
-		File[] repository_files = repo.listFiles();
+		try {
+			
+			System.out.println("checking repositories...");
+			
+			File mainConf = new File("D:\\Programs\\eclipse\\Source Connect\\src\\application\\conf\\sc.conf");
+			
+			if(!mainConf.exists()) {
+				createConfig(mainConf);
+			}
+			
+			Scanner s = new Scanner(mainConf);
+			
+			String line;
+			// read each line of the file
+			while(s.hasNextLine() && (line = s.nextLine()) != null) {
 
-	    for (int i = 0; i < repository_files.length; i++) {
-	    	
-	    	if (repository_files[i].isFile()) {
-	    		System.out.println("retrieving file: " + repository_files[i].getName());
-	    	} else if (repository_files[i].isDirectory()) {
-	    		System.out.println("retrieving directory: " + repository_files[i].getName());
-	    	}
-	    }
-	    
-	    return repository_files;
+				line.trim();
+				
+				// skip commented lines
+				if(line.startsWith("#") || line.startsWith("//")) {
+					continue;
+				}
+				
+				if(line.startsWith("REPOSITORY")) {
+					
+					File repo = new File(line.substring(11));
+					repositories.add(repo);
+					
+					System.out.println("repository " + repo.getAbsolutePath() + " has been loaded into memory");
+					
+				} else if(line.startsWith("IGNORE")) {
+
+					ignores.add(line.substring(7));
+					
+					System.out.println("ignore " + line.substring(7) + " has been loaded into memory");
+				}
+			}
+			
+			s.close();
+			
+			System.out.println("repositories: " + repositories);
+			System.out.println("ignores: " + ignores);
+			
+		} catch(FileNotFoundException e) {
+			e.printStackTrace();
+			
+			ExceptionHandler.popup("sc.conf has been removed or missplaced from your package, this file is required to run.", e, true);
+			
+		} catch(NoSuchElementException e1) {
+			
+			ExceptionHandler.popup("sc.conf is empty!", e1, true);
+		}
+
 	}
 	
 	/**
-	 * Takes an array of files to "stage" which prepares them to be committed
-	 * basically sorts through the selected files with the git ignore 
-	 * and packages them into a final state
+	 * recursively add all files and sub-directories in a given folder to an array-list and return it
 	 * 
-	 * @param File array
+	 * @param the repository of which the files you would like
+	 * @return all of the files in a given directory
 	 */
-	public static void stage(File files[], Commit commit) {
+	public static ArrayList<File> getFiles(String directoryName) {
 		
-		// checks for a git ignore
-		File gitignore = new File(".gitignore");
+	    File directory = new File(directoryName);
+
+	    // get all the files from a directory
+	    File[] fList = directory.listFiles();
+	    ArrayList<File> files = new ArrayList<File>();
+	    
+	    for (File file : fList) {
+	    	
+	        if (file.isFile()) {
+	        	
+	            files.add(file);
+	        } else if (file.isDirectory()) {
+	        	
+	            files.addAll(getFiles(file.getAbsolutePath()));
+	        }
+	    }
+	    return files;
+	}
 	
-		if(gitignore.exists() && gitignore.isHidden()) {
-			
+	/**
+	 * searches for a given file in this project
+	 * 
+	 * @param file
+	 * @return
+	 */
+	public static File getFile(File file) {
+		
+		System.out.println("searching for " + file.getName() + "...");
+		
+		ArrayList<File> files = getFiles(System.getProperty("user.dir"));
+
+		// loop through files returned by getFiles()
+		for(File f : files) {
+				
 			try {
-				
-				// read the contents
-				BufferedReader reader = new BufferedReader(
-						new FileReader(gitignore.getAbsolutePath()));
-				
-				ArrayList<String> ignores = new ArrayList<String>();
-				// loop through each thing we are going to ignore
-				
-				String ignore;
-				while((ignore = reader.readLine()) != null) {
-					
-					// if the line isn't a comment
-					if(!ignore.contains("#")) {
-						ignores.add(ignore);
-					}
+				if(f.getCanonicalPath().equals(file.getCanonicalPath())) {
+					System.out.println(f.getAbsolutePath());
+					return f;
 				}
-				
-				int count = 0;
-				
-				for(File file : files) {
-					/* checks file path and name
-					 *  example: there is a repository in Desktop
-					 *  (if) "guy.txt" == "guy.txt"
-					 *  (if) file C:/Desktop/chips/guy.txt (contains) /chips/ (or) /chips/guy.txt  
-					*/ 
-					if(!file.getName().contains(ignores.get(count)) 
-					|| file.getAbsolutePath().toString().contains(ignores.get(count))) {
-						// add the file to the stage
-						stage.add(file);
-						
-					} else {
-						continue;
-						// skip that file
-					}
-					
-					count++;
-					
-					reader.close();
-				}
-				
-			} catch(IOException e) {
+			} catch (IOException e) {
 				e.printStackTrace();
-				System.err.println("there was an error while accessing the git ignore file");
-			} catch(Exception e1) {
-				e1.printStackTrace();
-				System.err.println("there was an error that is unassociated with the git ignore file");
 			}
+		}
+		System.out.println("could not find " + file.getName());
+		return null;
+	}
+
+	public static ArrayList<File> getRepositories() {
+		return repositories;
+	}
+	
+	/**
+	 * TODO decide if we should hide the conf file?
+	 * WIP
+	 * @param f
+	 */
+	private void hideFile(File f) {
+		
+		System.out.println("detecting operating system...");
+		
+		String os = System.getProperty("os.name");
+		System.out.println("OS: " + os);
+		os.toLowerCase();
+
+		
+		
+		try {
 
 			
-		} else {
-			System.out.println("could not find gitignore");
-			System.out.println("continuing to stage...");
+			
+			if(os.contains("windows")) {
+				
+				System.out.println("your machine is running " + os);
+				
+				Path path = FileSystems.getDefault().getPath(f.getAbsolutePath());
+				Files.setAttribute(path, "dos:hidden", true);
+				
+			} else if(os.contains("mac")) {
+				
+				System.out.println("your machine is running " + os);
+				
+			} else if(os.contains("linux") || os.contains("unix")) {
+				
+				System.out.println("your machine is running " + os);
+				
+			} else {
+				System.out.println("your operating system - " + os + " - has no clear way of instantiating hidden files in java");
+			}
+			
+		} catch (IOException e) {
+
+			e.printStackTrace();
 		}
-		
-		for(File file : files) {
-			// add that file to the stage
-			stage.add(file);
-		}
-	
-	
 	}
 	
-	public void sendFile(String file, Socket s) throws IOException {
+	/**
+	 * goes to a given directory and makes a sc.conf file
+	 * 
+	 * @param path of creation
+	 */
+	private static void createConfig(File conf) {
 		
-		DataOutputStream dos = new DataOutputStream(s.getOutputStream());
-		FileInputStream fis = new FileInputStream(file);
-		
-		File f = new File(file);
-		// sends name of file
-		dos.writeUTF(file);
-		// sends size of file
-		dos.writeInt((int) f.length());
-		
-		// fills up the buffer on each write, then sends that buffer to client
-		byte[] buffer = new byte[8192];
-		while (fis.read(buffer) > 0) {
-			dos.write(buffer);
-		}
-		
-		fis.close();
-		dos.close();	
-	}
-	
-	public void saveFile(Socket clientSock) throws IOException {
-		
-		DataInputStream dis = new DataInputStream(clientSock.getInputStream());
-		FileOutputStream fos = new FileOutputStream(dis.readUTF());
-		
-		byte[] buffer = new byte[8192];
-		
-		// receives size of file
-		int filesize = dis.readInt();
-		int read = 0;
-		int totalRead = 0;
-		int remaining = filesize;
-		while((read = dis.read(buffer, 0, Math.min(buffer.length, remaining))) > 0) {
-			totalRead += read;
-			remaining -= read;
-			System.out.println("read " + totalRead + " bytes.");
-			fos.write(buffer, 0, read);
-		}
-		
-		fos.close();
-		dis.close();
-	}
-	
-	private static class Commit {
-		
-		private ArrayList<File> elements = new ArrayList<File>();
-		private String msg;
-		
-		@SuppressWarnings("unused")
-		public ArrayList<File> getElements() {
-			return elements;
-		}
-		@SuppressWarnings("unused")
-		public void setElements(ArrayList<File> elements) {
-			this.elements = elements;
-		}
-		@SuppressWarnings("unused")
-		public String getMsg() {
-			return msg;
-		}
-		@SuppressWarnings("unused")
-		public void setMsg(String msg) {
-			this.msg = msg;
+		try {
+
+			PrintWriter pw;
+			
+			if(conf.exists()) {
+				return;
+				
+			} else {
+				
+				System.out.println("creating main configuration file...");
+				System.out.println("sc.conf will be created at " + conf.getAbsolutePath());
+				
+				pw = new PrintWriter(conf);
+				
+				pw.println("# This is the main configuration file for Source Connect repository control");
+				pw.println("# Do not change any values presented in this file, unless you are sure of your intentions.");
+				pw.println();
+				pw.println("# Keywords");
+				pw.println();
+				pw.println("# REPOSITORY - a file location pointer to a local repository on this machine");
+				pw.println("# IGNORE - a file extension that will be ignored while commiting in any repository. ex. *.txt");
+				pw.println();
+				
+				pw.close();
+			}
+
+			pw.close();
+			
+			System.out.println("a new configuration file has been created");
+			
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+			
 		}
 	}
 }
