@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+
+<!--
+	Main display for the application
+  -->
+
+<BorderPane fx:id="BorderPane_Main" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="1090.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainController">
+   <top>
+      <VBox BorderPane.alignment="CENTER">
+         <children>
+            <MenuBar>
+              <menus>
+                <Menu fx:id="Menu_File" mnemonicParsing="false" text="File">
+                  <items>
+                        <Menu fx:id="Menu_New" mnemonicParsing="false" text="New">
+                          <items>
+                            <MenuItem fx:id="MenuItem_Repository" mnemonicParsing="false" onAction="#initRepository" text="Repository" />
+                              <MenuItem fx:id="MenuItem_Branch" mnemonicParsing="false" text="Branch" />
+                          </items>
+                        </Menu>
+                    <MenuItem fx:id="MenuItem_Close" mnemonicParsing="false" onAction="#exit" text="Close" />
+                  </items>
+                </Menu>
+                <Menu fx:id="Menu_Edit" mnemonicParsing="false" text="Edit">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Delete" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="About" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+            <ToolBar prefHeight="40.0" prefWidth="200.0">
+              <items>
+                <Button mnemonicParsing="false" text="Stage" />
+                  <Button mnemonicParsing="false" text="Commit" />
+                  <Button mnemonicParsing="false" text="Fetch" />
+                  <Button mnemonicParsing="false" text="Pull" />
+              </items>
+            </ToolBar>
+         </children>
+      </VBox>
+   </top>
+   <left>
+      <SplitPane fx:id="SplitPane_Repositories" dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" BorderPane.alignment="CENTER">
+        <items>
+          <AnchorPane fx:id="AnchorPane_bottom" minHeight="0.0" minWidth="0.0" prefHeight="208.0" prefWidth="158.0" />
+          <AnchorPane fx:id="AnchorPane_bottom" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
+        </items>
+      </SplitPane>
+   </left>
+</BorderPane>
