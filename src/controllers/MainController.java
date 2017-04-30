@@ -27,39 +27,39 @@ public class MainController implements Initializable {
 	
 	// Labels
 	@FXML
-	private static Label login_status;
+	private Label login_status;
 	
 	// Text Fields
 	@FXML
-	private static TextField username;
+	private TextField username;
 	@FXML
-	private static TextField password;
+	private TextField password;
 	
 	// Menus
 	@FXML
-	private static Menu Menu_File;
+	private Menu Menu_File;
 	@FXML
-	private static Menu Menu_Edit;
+	private Menu Menu_Edit;
 	@FXML
-	private static Menu Menu_Help;
+	private Menu Menu_Help;
 	@FXML
-	private static Menu Menu_New;
+	private Menu Menu_New;
 	
 	// Menu Items
 	@FXML
-	private static MenuItem MenuItem_Repository;
+	private MenuItem MenuItem_Repository;
 	@FXML
-	private static MenuItem MenuItem_Branch;
+	private MenuItem MenuItem_Branch;
 	@FXML
-	private static MenuItem MenuItem_Close;
+	private MenuItem MenuItem_Close;
 	
 	// panes
 	@FXML
-	private static BorderPane BorderPane_Main;
+	private BorderPane BorderPane_Main;
 	@FXML
-	private static SplitPane SplitPane_Repositories;
+	private SplitPane SplitPane_Repositories;
 	@FXML
-	private static AnchorPane AnchorPane_top;
+	private AnchorPane AnchorPane_top;
 	@FXML
 	private static AnchorPane AnchorPane_botton;
 	
@@ -74,10 +74,48 @@ public class MainController implements Initializable {
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
 	}
-
-
+	
 	public void initialize() {
 		
+	}
+	
+	public static void loadRepositoryLabels() {
+		
+		try {
+			
+			// make sure all files are loaded 
+			FileManager.loadConfigurations();
+			
+			if(FileManager.getRepositories().isEmpty()) {
+				System.out.println("no local repositories found");
+			}
+			
+			System.out.println("initializing controllers...");
+			
+			// loops through all of the user's repositories makes a button and adds it to stage
+			for(File f : FileManager.getRepositories()) {
+				
+				Button b = new Button(f.getName());
+				b.setPrefWidth(AnchorPane_botton.getWidth());
+				
+			    b.setOnAction(new EventHandler<ActionEvent>() {
+		             @Override public void handle(ActionEvent e) {
+		                  System.out.println("Repository: " + f.getName().toString() + " has been selected");
+		             }
+		        });
+				
+				AnchorPane_botton.getChildren().add(b);
+				
+				System.out.println("added repository button: " + f.getAbsolutePath());
+			}
+			
+		} catch(NullPointerException e) {
+			
+			ExceptionHandler.popup("could not retrieve a value from a file in the listed repositories", e, false);
+			
+		} catch(Exception e) {
+			
+		}
 	}
 	
 	/**
@@ -107,70 +145,5 @@ public class MainController implements Initializable {
 	public void initRepository(ActionEvent e) {
 
 		FileManager.initRepository();
-	}
-	
-	
-	public static Label getLogin_status() {
-		return login_status;
-	}
-
-	public static TextField getUsername() {
-		return username;
-	}
-
-	public static TextField getPassword() {
-		return password;
-	}
-
-	public static Menu getMenu_File() {
-		return Menu_File;
-	}
-
-	public static Menu getMenu_Edit() {
-		return Menu_Edit;
-	}
-
-	public static Menu getMenu_Help() {
-		return Menu_Help;
-	}
-
-	public static Menu getMenu_New() {
-		return Menu_New;
-	}
-
-	public static MenuItem getMenuItem_Repository() {
-		return MenuItem_Repository;
-	}
-
-	public static MenuItem getMenuItem_Branch() {
-		return MenuItem_Branch;
-	}
-
-	public static MenuItem getMenuItem_Close() {
-		return MenuItem_Close;
-	}
-
-	public static BorderPane getBorderPane_Main() {
-		return BorderPane_Main;
-	}
-
-	public static SplitPane getSplitPane_Repositories() {
-		return SplitPane_Repositories;
-	}
-
-	public static AnchorPane getAnchorPane_top() {
-		return AnchorPane_top;
-	}
-
-	public static AnchorPane getAnchorPane_botton() {
-		return AnchorPane_botton;
-	}
-
-	public static ArrayList<Label> getLabel_localRepositories() {
-		return Label_localRepositories;
-	}
-
-	public static ArrayList<Label> getLabel_remoteRepositories() {
-		return Label_remoteRepositories;
 	}
 }

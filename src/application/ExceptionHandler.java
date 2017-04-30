@@ -1,7 +1,5 @@
 package application;
 
-import java.awt.Toolkit;
-
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -9,7 +7,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -59,9 +57,7 @@ public class ExceptionHandler {
 		stage.setAlwaysOnTop(true);
 		stage.initModality(Modality.WINDOW_MODAL);
 		stage.initOwner(new Stage());
-		
 
-		
         Button button = new Button();
         button.setText("Exit");
         
@@ -69,14 +65,13 @@ public class ExceptionHandler {
         label.setText(msg);
         label.setWrapText(true);
         
-        VBox vBox = new VBox(20);
+        Pane container = new Pane();
         
-        vBox.getChildren().addAll(label,button);
+        container.getChildren().addAll(label,button);
         
         label.setAlignment(Pos.CENTER);  
-        vBox.setAlignment(Pos.CENTER);
         
-        Scene dialogScene = new Scene(vBox, 300, 200);
+        Scene dialogScene = new Scene(container, 300, 200);
         stage.setScene(dialogScene);
         
         if(fatal) {

@@ -12,7 +12,6 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 import javafx.stage.DirectoryChooser;
-import javafx.stage.Stage;
 
 /**
  * TODO add a "dump" file that stores an error log
@@ -66,6 +65,8 @@ public class FileManager {
 				if(mainConf.exists()) {
 					
 					pw = new PrintWriter(mainConf);
+					
+					System.out.println("logging new repository in main sc.conf");
 					
 					pw.println("REPOSITORY" + repository.getAbsoluteFile());
 					

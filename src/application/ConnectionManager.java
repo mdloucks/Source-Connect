@@ -1,5 +1,11 @@
 package application;
 
+import java.awt.AWTException;
+import java.awt.Image;
+import java.awt.SystemTray;
+import java.awt.Toolkit;
+import java.awt.TrayIcon;
+import java.awt.TrayIcon.MessageType;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -67,5 +73,41 @@ public class ConnectionManager {
 		
 		fos.close();
 		dis.close();
+	}
+	
+	/**
+	 * TODO setup a server that tells us if there's an update
+	 * 
+	 * queries our server to check for an update, if there is, ask the user for an update in the windows tray
+	 * 
+	 * I don't thinks this works for mac or linux (unless we add more libraries)
+	 * 
+	 * @throws AWTException 
+	 */
+	public static void checkUpdates() {
+		
+        if (SystemTray.isSupported()) {
+        	
+        	try {
+        		
+                //Obtain only one instance of the SystemTray object
+                SystemTray tray = SystemTray.getSystemTray();
+
+                Image image = Toolkit.getDefaultToolkit().createImage("icon.png");
+                TrayIcon trayIcon = new TrayIcon(image, "Source Connect");
+                trayIcon.setImageAutoSize(true);
+                trayIcon.setToolTip("Source Connect update");
+                tray.add(trayIcon);
+                trayIcon.displayMessage("Update availiable for Source Connect", "Version: " + "0.0.0 " + "has been released!", MessageType.INFO);
+            	
+        	} catch(AWTException e) {
+        		
+        	}
+
+        } else {
+            System.err.println("system tray is not supported by your operating system");
+        }
+			
+
 	}
 }
