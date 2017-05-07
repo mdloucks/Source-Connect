@@ -115,7 +115,15 @@ public class FileManager {
 			
 			System.out.println("checking repositories...");
 			
-			File mainConf = new File("D:\\Programs\\eclipse\\Source Connect\\src\\application\\conf\\sc.conf");
+			//File mainConf = new File("D:\\Programs\\eclipse\\Source Connect\\src\\application\\conf\\sc.conf");
+			// Path relative to project
+			File mainConf = new File("src/application/conf/sc.conf");
+			
+			 try {
+				System.out.println(new File(".").getCanonicalPath());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			
 			if(!mainConf.exists()) {
 				createConfig(mainConf);
