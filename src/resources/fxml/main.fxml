@@ -57,8 +57,8 @@
    <left>
       <SplitPane fx:id="SplitPane_Repositories" dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" BorderPane.alignment="CENTER">
         <items>
-          <AnchorPane fx:id="AnchorPane_bottom" minHeight="0.0" minWidth="0.0" prefHeight="208.0" prefWidth="158.0" />
-          <AnchorPane fx:id="AnchorPane_bottom" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
+          <AnchorPane fx:id="AnchorPane_bottom" minHeight="0" minWidth="0" prefHeight="208.0" prefWidth="158.0" />
+          <AnchorPane fx:id="AnchorPane_bottom" minHeight="0" minWidth="0" prefHeight="100.0" prefWidth="160.0" />
         </items>
       </SplitPane>
    </left>
