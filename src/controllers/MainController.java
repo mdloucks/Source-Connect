@@ -61,7 +61,8 @@ public class MainController implements Initializable {
 	@FXML
 	private AnchorPane AnchorPane_top;
 	@FXML
-	private static AnchorPane AnchorPane_botton;
+	private static AnchorPane AnchorPane_bottom;
+	
 	
 	// files
 	
@@ -72,7 +73,9 @@ public class MainController implements Initializable {
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-
+		System.out.println("initialized! (Line 76)");
+		System.out.println(AnchorPane_bottom);
+		System.out.println(AnchorPane_top);
 	}
 	
 	public void initialize() {
@@ -96,15 +99,15 @@ public class MainController implements Initializable {
 			for(File f : FileManager.getRepositories()) {
 				
 				Button b = new Button(f.getName());
-				b.setPrefWidth(AnchorPane_botton.getWidth());
-				
+				b.setPrefWidth(AnchorPane_bottom.getWidth());
+								
 			    b.setOnAction(new EventHandler<ActionEvent>() {
 		             @Override public void handle(ActionEvent e) {
 		                  System.out.println("Repository: " + f.getName().toString() + " has been selected");
 		             }
 		        });
 				
-				AnchorPane_botton.getChildren().add(b);
+			    AnchorPane_bottom.getChildren().add(b);
 				
 				System.out.println("added repository button: " + f.getAbsolutePath());
 			}

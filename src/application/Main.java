@@ -19,13 +19,18 @@ public class Main extends Application implements Runnable {
 	private static ConnectionManager cm;
 	private static ServerSocket ss;
 	
+	private static boolean isMac = true;
+	
 	@Override
 	public void start(Stage window) {
 		
 		try {
 			
 			System.out.println("checking for updates...");
-			ConnectionManager.checkUpdates();
+			// If it is a Mac computer, this will block forever
+			if(!isMac) {
+				//ConnectionManager.checkUpdates();
+			}
 			
 			System.out.println("loading scenes...");
 			// loading anything from FXMLLoader calls the initialize method in MainController
