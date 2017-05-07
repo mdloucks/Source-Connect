@@ -7,13 +7,18 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 /**
  * gives the end client easier ways to diagnose problems with their application
+ * 
+ * error handling stages are generated programmatically, because the user is unable to do a certain action </br>
+ * and we may be unable to load the fxml files for the stage reliably. </br>
+ * 
+ * 
  * 
  * TODO near deployment, overhaul this class and add some better exception handling
  * 
@@ -34,12 +39,6 @@ public class ExceptionHandler {
 	 *
 	 * <b> creates a quick pop up window that displays a message  </b> </br> </br>
 	 * 
-	 * for errors, this is generated programmatically, because the user is unable to load any files </br>
-	 * due to some weird file path issues, so it's unlikely we will be able to load error fxml files </br>
-	 * 
-	 * we will use this method for problems that completely prevent the core use of this application, like
-	 * being unable to load the basic fxml files, or commit to your repository </br> </br>
-	 * 
 	 * fatal exceptions are those that severely limit the program and the user's ability to function
 	 * Set it as true to have the program exit on button click
 	 * 
@@ -49,7 +48,9 @@ public class ExceptionHandler {
 	 */
 	public static void popup(String msg, Exception exception, boolean fatal) {
 		
-		exception.printStackTrace();
+		if(exception != null) {
+			exception.printStackTrace();
+		}
 		
 		final Stage stage = new Stage();
 		stage.setTitle("An error has occured");
@@ -65,7 +66,9 @@ public class ExceptionHandler {
         label.setText(msg);
         label.setWrapText(true);
         
-        Pane container = new Pane();
+        VBox container = new VBox(12);
+        
+        container.setAlignment(Pos.CENTER);
         
         container.getChildren().addAll(label,button);
         
@@ -103,8 +106,6 @@ public class ExceptionHandler {
   		  	}); 
         	
         }
-        
-
         
         stage.show();
 	}

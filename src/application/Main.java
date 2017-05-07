@@ -27,6 +27,9 @@ public class Main extends Application implements Runnable {
 			System.out.println("checking for updates...");
 			ConnectionManager.checkUpdates();
 			
+			// make sure all files are loaded 
+			FileManager.loadConfigurations();
+			
 			System.out.println("loading scenes...");
 			// loading anything from FXMLLoader calls the initialize method in MainController
 			Parent parent_main = FXMLLoader.load(getClass().getResource("/resources/fxml/main.fxml"));
@@ -51,7 +54,6 @@ public class Main extends Application implements Runnable {
 			Thread t1 = new Thread(new Main());
 			t1.start();
 			
-			MainController.loadRepositoryLabels();
 			
 			window.setScene(scene_main);
 			window.show();
