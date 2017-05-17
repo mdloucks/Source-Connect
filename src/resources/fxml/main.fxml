@@ -1,65 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.ToolBar?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
 <!--
 	Main display for the application
   -->
 
-<BorderPane fx:id="BorderPane_Main" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="1090.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainController">
+<BorderPane fx:id="borderPane_main" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="1090.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainController">
    <top>
-      <VBox BorderPane.alignment="CENTER">
+      <VBox fx:id="vBox_menuBox" BorderPane.alignment="CENTER">
          <children>
             <MenuBar>
               <menus>
-                <Menu fx:id="Menu_File" mnemonicParsing="false" text="File">
+                <Menu fx:id="menu_file" mnemonicParsing="false" text="File">
                   <items>
-                        <Menu fx:id="Menu_New" mnemonicParsing="false" text="New">
+                        <Menu fx:id="menu_new" mnemonicParsing="false" text="New">
                           <items>
-                            <MenuItem fx:id="MenuItem_Repository" mnemonicParsing="false" onAction="#initRepository" text="Repository" />
-                              <MenuItem fx:id="MenuItem_Branch" mnemonicParsing="false" text="Branch" />
+                            <MenuItem fx:id="menuItem_repositories" mnemonicParsing="false" onAction="#initRepository" text="Repository" />
+                              <MenuItem fx:id="menuItem_branch" mnemonicParsing="false" text="Branch" />
                           </items>
                         </Menu>
-                    <MenuItem fx:id="MenuItem_Close" mnemonicParsing="false" onAction="#exit" text="Close" />
+                    <MenuItem fx:id="menuItem_close" mnemonicParsing="false" onAction="#exit" text="Close" />
                   </items>
                 </Menu>
-                <Menu fx:id="Menu_Edit" mnemonicParsing="false" text="Edit">
+                <Menu fx:id="menu_edit" mnemonicParsing="false" text="Edit">
                   <items>
                     <MenuItem mnemonicParsing="false" text="Delete" />
                   </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Help">
+                <Menu fx:id="menu_help" mnemonicParsing="false" text="Help">
                   <items>
                     <MenuItem mnemonicParsing="false" text="About" />
                   </items>
                 </Menu>
               </menus>
             </MenuBar>
-            <ToolBar prefHeight="40.0" prefWidth="200.0">
-              <items>
-                <Button mnemonicParsing="false" text="Stage" />
-                  <Button mnemonicParsing="false" text="Commit" />
-                  <Button mnemonicParsing="false" text="Fetch" />
-                  <Button mnemonicParsing="false" text="Pull" />
-              </items>
-            </ToolBar>
+            <ButtonBar fx:id="buttonBar_mainBar" prefHeight="40.0" prefWidth="200.0">
+               <buttons>
+                  <Button fx:id="button_commit" mnemonicParsing="false" onAction="#commit" text="Commit" ButtonBar.buttonData="LEFT" />
+                  <Button fx:id="button_push" mnemonicParsing="false" onAction="#push" text="Push" ButtonBar.buttonData="LEFT" />
+                  <Button fx:id="button_pull" mnemonicParsing="false" onAction="#pull" text="Pull" ButtonBar.buttonData="LEFT" />
+                  <Button fx:id="button_fetch" mnemonicParsing="false" onAction="#fetch" text="Fetch" ButtonBar.buttonData="LEFT" />
+                  <Button fx:id="button_stage" mnemonicParsing="false" onAction="#stage" text="Stage" ButtonBar.buttonData="LEFT" />
+               </buttons>
+            </ButtonBar>
          </children>
       </VBox>
    </top>
    <left>
-      <SplitPane fx:id="SplitPane_Repositories" dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" BorderPane.alignment="CENTER">
-        <items>
-          <AnchorPane fx:id="AnchorPane_bottom" minHeight="0.0" minWidth="0.0" prefHeight="208.0" prefWidth="158.0" />
-          <AnchorPane fx:id="AnchorPane_bottom" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
-        </items>
-      </SplitPane>
+      <VBox fx:id="vBox_repositories" prefHeight="485.0" prefWidth="213.0" BorderPane.alignment="CENTER" />
    </left>
+   <center>
+      <VBox fx:id="vBox_mainContainer" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+         <children>
+            <HBox fx:id="hBox_fileInfo" prefHeight="31.0" prefWidth="840.0">
+               <children>
+                  <Label prefHeight="31.0" prefWidth="194.0" text="Name">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                  </Label>
+                  <Label prefHeight="54.0" prefWidth="233.0" text="Date modified" />
+                  <Label prefHeight="89.0" prefWidth="224.0" text="Type" />
+                  <Label prefHeight="86.0" prefWidth="212.0" text="Size" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </center>
 </BorderPane>
