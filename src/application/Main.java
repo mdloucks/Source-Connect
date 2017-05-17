@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import controllers.MainController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -23,7 +22,6 @@ public class Main extends Application implements Runnable {
 	public void start(Stage window) {
 		
 		try {
-			
 			System.out.println("checking for updates...");
 			ConnectionManager.checkUpdates();
 			

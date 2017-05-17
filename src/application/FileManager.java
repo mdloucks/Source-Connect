@@ -177,9 +177,7 @@ public class FileManager {
 	 * @param the repository of which the files you would like
 	 * @return all of the files in a given directory
 	 */
-	public static ArrayList<File> getFiles(String directoryName) {
-		
-	    File directory = new File(directoryName);
+	public static ArrayList<File> getFiles(File directory) {
 
 	    // get all the files from a directory
 	    File[] fList = directory.listFiles();
@@ -192,7 +190,7 @@ public class FileManager {
 	            files.add(file);
 	        } else if (file.isDirectory()) {
 	        	
-	            files.addAll(getFiles(file.getAbsolutePath()));
+	            files.addAll(getFiles(directory));
 	        }
 	    }
 	    return files;
@@ -208,7 +206,7 @@ public class FileManager {
 		
 		System.out.println("searching for " + file.getName() + "...");
 		
-		ArrayList<File> files = getFiles(System.getProperty("user.dir"));
+		ArrayList<File> files = getFiles(new File(System.getProperty("user.dir")));
 
 		// loop through files returned by getFiles()
 		for(File f : files) {

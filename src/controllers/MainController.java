@@ -1,8 +1,12 @@
 package controllers;
 
+import java.awt.Desktop;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.ResourceBundle;
 
 import application.ExceptionHandler;
@@ -13,14 +17,16 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 public class MainController implements Initializable {
@@ -58,12 +64,6 @@ public class MainController implements Initializable {
 	// panes
 	@FXML
 	private BorderPane borderPane_main;
-	@FXML
-	private SplitPane splitPane_repositories;
-	@FXML
-	private AnchorPane anchorPane_top;
-	@FXML
-	private AnchorPane anchorPane_botton;
 	
 	// files
 	
@@ -90,18 +90,37 @@ public class MainController implements Initializable {
 	@FXML 
 	private Button button_pull;
 	
-	// vboxes
-	
 	@FXML
-	private VBox vBox_mainFileContainer;
+	private Button button_push;
+	
+	// vboxes
 	
 	@FXML 
 	private VBox vBox_menuBox;
+	
+	@FXML
+	private ButtonBar buttonBar_mainBar;
+		
+	@FXML
+	private VBox vBox_repositories;
+	
+	@FXML
+	private VBox vBox_mainContainer;
+	
+	// hboxes
+	
+	@FXML
+	private HBox hBox_fileInfo;
+	
+	// current selected button reference
+	File selectedFile;
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		
 		loadRepositoryLabels();
+		buttonBar_mainBar.setDisable(true);
+		System.out.println("disabled button bar buttons");
 	}
 	
 	/**
@@ -112,6 +131,8 @@ public class MainController implements Initializable {
 		
 		try {
 
+			ArrayList<Button> repositoryButtons = new ArrayList<Button>();
+			
 			if(FileManager.getRepositories().isEmpty()) {
 				
 				System.out.println("no local repositories found");
@@ -119,29 +140,33 @@ public class MainController implements Initializable {
 			} else {
 				
 				System.out.println("initializing buttons for user repositories...");
+								
 				
-				// loops through all of the user's repositories makes a button and adds it to stage
 				for(File f : FileManager.getRepositories()) {
 					
 					Button b = new Button(f.getName());
 					b.setText(f.getName());
-					b.prefWidthProperty().bind(anchorPane_botton.widthProperty());
+					b.prefWidthProperty().bind(vBox_repositories.widthProperty());
+					b.setWrapText(true);
 					
 				    b.setOnAction(new EventHandler<ActionEvent>() {
 			             @Override public void handle(ActionEvent e) {
-			                  System.out.println("Repository: " + f.getName().toString() + " has been selected");
+			                  selectedFile = f;
 			                  
+			                  buttonBar_mainBar.setDisable(false);
+			                  displayFiles(f);
 			                  
 			             }
 			        });
-					
-					anchorPane_botton.getChildren().add(b);
-					
-					System.out.println("added repository button: " + f.getAbsolutePath());
-				}
-			}
-			
 
+				    repositoryButtons.add(b);
+				
+				    System.out.println("added repository button: " + f.getAbsolutePath());
+					
+				}
+				vBox_repositories.getChildren().addAll(repositoryButtons);
+				System.out.println("added buttons to vertical repository box");
+			}
 			
 		} catch(NullPointerException e) {
 			
@@ -159,15 +184,85 @@ public class MainController implements Initializable {
 	 */
 	private void displayFiles(File directory) {
 		
-		if(!directory.isDirectory())
+		if(!directory.isDirectory()) {
+			System.out.println(directory.getName() + " is not a directory");
 			return;
-		
-		for(File f : FileManager.getFiles(directory.getAbsolutePath())) {
-			
 		}
 		
-	}
+		if(directory.list().length == 0) {
+			System.out.println("there are no files to display!");
+			return;
+		}
+		
+		System.out.println("displaying files for " + directory.getName());
+		vBox_mainContainer.getChildren().clear();
+		
+		// returns all of the files in "directory" and loops through them
+		for(File f : directory.listFiles()) {
 
+			// horizontal container for all of the file info
+			HBox hbox = new HBox(0);
+
+			// get the file extension
+			String extension = "";
+			
+			int i = f.getAbsolutePath().lastIndexOf('.');
+		
+			if (i > 0) {
+			    extension = f.getAbsolutePath().substring(i+1);
+			} else {
+				extension = "File Folder";
+			}
+			
+			// get precise size
+			long size = f.length() / 1000000000;
+			String strSize = " GB";
+			
+			if(size < 1) {
+				size = f.length() / 1000000;
+				strSize = " MB";
+			}
+			if(size < 1) {
+				size = f.length() / 1000;
+				strSize = " KB";
+			}
+			
+			Button b = new Button(f.getName() + "\t" 
+					+ new SimpleDateFormat("dd/MM/yyyy H:m:s").format(
+						    new Date(f.lastModified()) 
+							) + "\t" 
+					+ extension + "\t"
+					+ Long.toString(size).concat(strSize));
+			
+
+			b.setOnMouseClicked(new EventHandler<MouseEvent>() {
+				
+			    @Override
+			    public void handle(MouseEvent mouseEvent) {
+			    	
+			        if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
+			        	
+			            if(mouseEvent.getClickCount() == 2) {
+			            	
+			                try {
+			                	
+								Desktop.getDesktop().open(f);
+								System.out.println("opening file " + f.getName());
+								
+							} catch (IOException e) {
+								
+								ExceptionHandler.popup("Java could not find an appropriate default application to open this file", e, false);
+								e.printStackTrace();
+							}
+			            }
+			        }
+			    }
+			});
+		    
+			hbox.getChildren().add(b);
+			vBox_mainContainer.getChildren().add(hbox);	
+		}
+	}
 	
 	/**
 	 * TODO send login info to a web site
@@ -185,16 +280,32 @@ public class MainController implements Initializable {
 		}
 	}
 	
-	public void exit(ActionEvent e) {
+	public void exit() {
 		Platform.exit();
 		System.exit(0);
 	}
 	
-	/** 
-	 * an on click method that saves a configuration file that is loaded when you re launch the app
-	 * 
-	 * @param e
-	 */
+	// Committing 
+	public void commit(ActionEvent event) {
+		System.out.println("committing repository " + selectedFile.getName());
+	}
+	
+	public void push(ActionEvent event) {
+		System.out.println("pushing repository " + selectedFile.getName());
+	}
+	
+	public void pull(ActionEvent event) {
+		System.out.println("pulling repository " + selectedFile.getName());
+	}
+	
+	public void fetch(ActionEvent event) {
+		System.out.println("fetching repository " + selectedFile.getName());
+	}
+	
+	public void stage(ActionEvent event) {
+		System.out.println("staging repository " + selectedFile.getName());
+	}
+	
 	public void initRepository(ActionEvent e) {
 
 		FileManager.initRepository();
@@ -286,30 +397,6 @@ public class MainController implements Initializable {
 
 	public void setBorderPane_main(BorderPane borderPane_main) {
 		this.borderPane_main = borderPane_main;
-	}
-
-	public SplitPane getSplitPane_repositories() {
-		return splitPane_repositories;
-	}
-
-	public void setSplitPane_repositories(SplitPane splitPane_repositories) {
-		this.splitPane_repositories = splitPane_repositories;
-	}
-
-	public AnchorPane getAnchorPane_top() {
-		return anchorPane_top;
-	}
-
-	public void setAnchorPane_top(AnchorPane anchorPane_top) {
-		this.anchorPane_top = anchorPane_top;
-	}
-
-	public AnchorPane getAnchorPane_botton() {
-		return anchorPane_botton;
-	}
-
-	public void setAnchorPane_botton(AnchorPane anchorPane_botton) {
-		this.anchorPane_botton = anchorPane_botton;
 	}
 
 	public ArrayList<Label> getLabel_localRepositories() {
