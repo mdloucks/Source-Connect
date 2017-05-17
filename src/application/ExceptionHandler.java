@@ -1,5 +1,7 @@
 package application;
 
+import java.awt.Toolkit;
+
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -14,11 +16,6 @@ import javafx.stage.WindowEvent;
 
 /**
  * gives the end client easier ways to diagnose problems with their application
- * 
- * error handling stages are generated programmatically, because the user is unable to do a certain action </br>
- * and we may be unable to load the fxml files for the stage reliably. </br>
- * 
- * 
  * 
  * TODO near deployment, overhaul this class and add some better exception handling
  * 
@@ -39,6 +36,12 @@ public class ExceptionHandler {
 	 *
 	 * <b> creates a quick pop up window that displays a message  </b> </br> </br>
 	 * 
+	 * for errors, this is generated programmatically, because the user is unable to load any files </br>
+	 * due to some weird file path issues, so it's unlikely we will be able to load error fxml files </br>
+	 * 
+	 * we will use this method for problems that completely prevent the core use of this application, like
+	 * being unable to load the basic fxml files, or commit to your repository </br> </br>
+	 * 
 	 * fatal exceptions are those that severely limit the program and the user's ability to function
 	 * Set it as true to have the program exit on button click
 	 * 
@@ -48,9 +51,7 @@ public class ExceptionHandler {
 	 */
 	public static void popup(String msg, Exception exception, boolean fatal) {
 		
-		if(exception != null) {
-			exception.printStackTrace();
-		}
+		exception.printStackTrace();
 		
 		final Stage stage = new Stage();
 		stage.setTitle("An error has occured");
@@ -58,7 +59,9 @@ public class ExceptionHandler {
 		stage.setAlwaysOnTop(true);
 		stage.initModality(Modality.WINDOW_MODAL);
 		stage.initOwner(new Stage());
+		
 
+		
         Button button = new Button();
         button.setText("Exit");
         
@@ -66,15 +69,14 @@ public class ExceptionHandler {
         label.setText(msg);
         label.setWrapText(true);
         
-        VBox container = new VBox(12);
+        VBox vBox = new VBox(20);
         
-        container.setAlignment(Pos.CENTER);
-        
-        container.getChildren().addAll(label,button);
+        vBox.getChildren().addAll(label,button);
         
         label.setAlignment(Pos.CENTER);  
+        vBox.setAlignment(Pos.CENTER);
         
-        Scene dialogScene = new Scene(container, 300, 200);
+        Scene dialogScene = new Scene(vBox, 300, 200);
         stage.setScene(dialogScene);
         
         if(fatal) {
@@ -106,6 +108,8 @@ public class ExceptionHandler {
   		  	}); 
         	
         }
+        
+
         
         stage.show();
 	}

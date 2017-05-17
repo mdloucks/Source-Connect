@@ -12,6 +12,7 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 import javafx.stage.DirectoryChooser;
+import javafx.stage.Stage;
 
 /**
  * TODO add a "dump" file that stores an error log
@@ -57,43 +58,44 @@ public class FileManager {
 				
 				// configuration file in another folder
 				File remoteConf = new File(repository.getPath() + "/sc.conf");
-				
+
 				// local configuration file
-				File mainConf = new File("D:\\Programs\\eclipse\\Source Connect\\src\\application\\conf\\sc.conf");
-				// validate mainConf
-				createConfig(mainConf);
+				File mainConf = new File("sc.conf");
 				
 				// store the new file path in sc.conf
 				if(mainConf.exists()) {
 					
 					pw = new PrintWriter(mainConf);
 					
-					System.out.println("logging new repository in main sc.conf");
-					
-					pw.println("REPOSITORY " + repository.getAbsoluteFile());
-					
-					pw.close();
-					
-				}
-
-				// initialize remoteConf
-				if(!remoteConf.exists()) {
-					
-					pw = new PrintWriter(remoteConf);
-					pw.println("# This is the configuration file for your Source Connect repository");
-					pw.println("# Do not change any values presented in this file, unless you are sure of your intentions.");			    
+					pw.println("REPOSITORY" + repository.getAbsoluteFile());
 					
 					pw.close();
 					
 				} else {
-					
-					System.out.println("directory " + remoteConf.getAbsolutePath() + " is already a repository!");
-					ExceptionHandler.popup("directory " + remoteConf.getAbsolutePath() + " is already a repository!", null, false);
+
+					createConfig(mainConf);
 				}
+
+				// initialize remoteConf
+				pw = new PrintWriter(remoteConf);
+				pw.println("# This is the main configuration file for your Source Connect repository");
+				pw.println("# Do not change any values presented in this file, unless you are sure of your intentions.");
+				// set hidden
+				Process p = Runtime.getRuntime().exec("attrib +h " + remoteConf.getPath() + "/sc.conf");
+			    p.waitFor();
+			    System.out.println(remoteConf.getPath() + "/sc.conf");
+			    
+				
+				pw.close();
 				
 			} catch (FileNotFoundException e1) {
 				e1.printStackTrace();
 				
+			} catch(IOException e2) {
+				e2.printStackTrace();
+				
+			} catch (InterruptedException e3) {
+				e3.printStackTrace();
 			}
 			
 		} else {
@@ -102,14 +104,15 @@ public class FileManager {
 	}
 	
 	/**
-	 * loads any relevant data from the main configuration folder into memory
+	 * loads any relevant data from the conf folder into memory
+	 * 
 	 * 
 	 */
 	public static void loadConfigurations() {
 		
 		try {
 			
-			System.out.println("checking configurations...");
+			System.out.println("checking repositories...");
 			
 			File mainConf = new File("D:\\Programs\\eclipse\\Source Connect\\src\\application\\conf\\sc.conf");
 			
@@ -135,18 +138,13 @@ public class FileManager {
 					File repo = new File(line.substring(11));
 					repositories.add(repo);
 					
-					System.out.println("repository: " + repo.getAbsolutePath() + " has been loaded into memory");
+					System.out.println("repository " + repo.getAbsolutePath() + " has been loaded into memory");
 					
 				} else if(line.startsWith("IGNORE")) {
 
 					ignores.add(line.substring(7));
 					
-					System.out.println("ignore: " + line.substring(7) + " has been loaded into memory");
-					
-				} else if(line.startsWith("REMOTE")) {
-					
-					
-					System.out.println("remote: WIP" );
+					System.out.println("ignore " + line.substring(7) + " has been loaded into memory");
 				}
 			}
 			
@@ -167,17 +165,15 @@ public class FileManager {
 
 	}
 	
-	public static ArrayList<String> getIgnores() {
-		return ignores;
-	}
-
 	/**
 	 * recursively add all files and sub-directories in a given folder to an array-list and return it
 	 * 
 	 * @param the repository of which the files you would like
 	 * @return all of the files in a given directory
 	 */
-	public static ArrayList<File> getFiles(File directory) {
+	public static ArrayList<File> getFiles(String directoryName) {
+		
+	    File directory = new File(directoryName);
 
 	    // get all the files from a directory
 	    File[] fList = directory.listFiles();
@@ -190,7 +186,7 @@ public class FileManager {
 	            files.add(file);
 	        } else if (file.isDirectory()) {
 	        	
-	            files.addAll(getFiles(directory));
+	            files.addAll(getFiles(file.getAbsolutePath()));
 	        }
 	    }
 	    return files;
@@ -206,7 +202,7 @@ public class FileManager {
 		
 		System.out.println("searching for " + file.getName() + "...");
 		
-		ArrayList<File> files = getFiles(new File(System.getProperty("user.dir")));
+		ArrayList<File> files = getFiles(System.getProperty("user.dir"));
 
 		// loop through files returned by getFiles()
 		for(File f : files) {
@@ -239,9 +235,13 @@ public class FileManager {
 		
 		String os = System.getProperty("os.name");
 		System.out.println("OS: " + os);
-		os.toLowerCase();		
+		os.toLowerCase();
+
+		
 		
 		try {
+
+			
 			
 			if(os.contains("windows")) {
 				
@@ -276,13 +276,13 @@ public class FileManager {
 	private static void createConfig(File conf) {
 		
 		try {
-	
+
+			PrintWriter pw;
+			
 			if(conf.exists()) {
 				return;
 				
 			} else {
-				
-				PrintWriter pw;
 				
 				System.out.println("creating main configuration file...");
 				System.out.println("sc.conf will be created at " + conf.getAbsolutePath());
@@ -300,8 +300,10 @@ public class FileManager {
 				
 				pw.close();
 			}
+
+			pw.close();
 			
-			System.out.println("a new main configuration file has been created");
+			System.out.println("a new configuration file has been created");
 			
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();

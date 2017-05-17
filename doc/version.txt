@@ -1,1 +1,0 @@
-A log of improvements and release versions made in Source connect.
