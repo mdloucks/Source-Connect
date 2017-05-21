@@ -26,7 +26,7 @@
                         <Menu fx:id="menu_new" mnemonicParsing="false" text="New">
                           <items>
                             <MenuItem fx:id="menuItem_repositories" mnemonicParsing="false" onAction="#initRepository" text="Repository" />
-                              <MenuItem fx:id="menuItem_branch" mnemonicParsing="false" text="Branch" />
+                              <MenuItem fx:id="menuItem_branch" mnemonicParsing="false" onAction="#initBranch" text="Branch" />
                           </items>
                         </Menu>
                     <MenuItem fx:id="menuItem_close" mnemonicParsing="false" onAction="#exit" text="Close" />
@@ -34,12 +34,12 @@
                 </Menu>
                 <Menu fx:id="menu_edit" mnemonicParsing="false" text="Edit">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="Delete" />
+                    <MenuItem mnemonicParsing="false" onAction="#deleteRepository" text="Delete" />
                   </items>
                 </Menu>
                 <Menu fx:id="menu_help" mnemonicParsing="false" text="Help">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="About" />
+                    <MenuItem mnemonicParsing="false" onAction="#openAbout" text="About" />
                   </items>
                 </Menu>
               </menus>
