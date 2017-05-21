@@ -36,7 +36,7 @@ public class Git {
 				break;
 				
 			case MacOS:
-				executable = ".sh";
+				executable = "/Applications/Utilities/Terminal.app";
 				break;
 				
 			case Linux:
@@ -51,6 +51,13 @@ public class Git {
 		}
 		
 		System.out.println("executing command \"" + command +  "\" with " + executable);
+		
+		
+		try {
+			Runtime.getRuntime().exec(command);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 		
 		try {
 			// /C Carries out the command specified by string and then terminates
