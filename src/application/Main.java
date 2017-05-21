@@ -27,11 +27,15 @@ public class Main extends Application implements Runnable {
 			System.out.println("detecting os...");
 			detectOS();
 			
-			//Git g = new Git();
-			//g.execute("dir");
+			Git g = new Git();
+			g.execute("ls");
 			
-			System.out.println("checking for updates...");
-			ConnectionManager.checkUpdates();
+			if(!OS.equals(OperatingSystem.MacOS)) {
+				System.out.println("checking for updates...");
+				ConnectionManager.checkUpdates();
+			} else {
+				System.out.println("not checking for updates due to os");
+			}
 			
 			FileManager.loadConfigurations(Git.getRepositories(), Git.getIgnores());
 			
@@ -129,13 +133,15 @@ public class Main extends Application implements Runnable {
 		
 		String os = System.getProperty("os.name").toLowerCase();
 		
+		System.out.println(os);
+		
 		if(os.contains("windows")) {
 			Main.OS = OperatingSystem.Windows;
 			System.out.println("your machine is running " + os);
 		} else if(os.contains("nux")) {
 			Main.OS = OperatingSystem.Linux;
 			System.out.println("your machine is running " + os);
-		} else if(os.contains("macOs")) {
+		} else if(os.contains("mac")) {
 			Main.OS = OperatingSystem.MacOS;
 			System.out.println("your machine is running " + os);
 		} else {
