@@ -20,3 +20,7 @@
 #buttonBar_mainBar {
 	-fx-background-color: #4E5152;
 }
+
+.label {
+	-fx-text-fill: #646464;
+}
