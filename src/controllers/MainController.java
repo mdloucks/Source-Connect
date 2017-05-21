@@ -140,12 +140,34 @@ public class MainController implements Initializable {
 		}
 	}
 	
+	// Main menu bar actions
+	
+	// File
+	public void initRepository(ActionEvent e) {
+		new Repository();
+	}
+	
+	public void initBranch(ActionEvent e) {
+		// TODO: Create new branch here
+	}
+	
 	public void exit() {
 		Platform.exit();
 		System.exit(0);
 	}
 	
-	// Committing 
+	// Edit
+	public void deleteRepository(ActionEvent e) {
+		// TODO: Delete the selected repository
+	}
+	
+	// Help
+	public void openAbout(ActionEvent e) {
+		// TODO: Open an about pop-up
+	}
+	
+	// Repository actions
+	
 	public void commit(ActionEvent event) {
 		System.out.println("committing repository " + selectedFile.getName());
 	}
@@ -166,11 +188,8 @@ public class MainController implements Initializable {
 		System.out.println("staging repository " + selectedFile.getName());
 	}
 	
-	public void initRepository(ActionEvent e) {
-
-		new Repository();
-	}
-
+	// Login
+	
 	public Label getLogin_status() {
 		return login_status;
 	}
@@ -194,7 +213,9 @@ public class MainController implements Initializable {
 	public void setPassword(TextField password) {
 		this.password = password;
 	}
-
+	
+	// Other
+	
 	public Menu getMenu_file() {
 		return menu_file;
 	}
