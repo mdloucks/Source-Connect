@@ -60,9 +60,7 @@ public class ButtonController extends MainController {
 					
 					Button b = new Button(f.getName());
 					b.setText(f.getName());
-					System.out.println("1");
 					b.prefWidthProperty().bind(m.vBox_repositories.widthProperty());
-					System.out.println("2");
 					b.setGraphic(new ImageView(imgFolder));
 					b.setWrapText(true); 
 					
