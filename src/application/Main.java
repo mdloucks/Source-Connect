@@ -30,7 +30,7 @@ public class Main extends Application implements Runnable {
 			Git g = new Git();
 			g.execute("ls");
 			
-			if(!OS.equals(OperatingSystem.MacOS)) {
+			if(OS.equals(OperatingSystem.Windows)) {
 				System.out.println("checking for updates...");
 				ConnectionManager.checkUpdates();
 			} else {
