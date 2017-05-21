@@ -17,16 +17,23 @@ public class Main extends Application implements Runnable {
 
 	private static ConnectionManager cm;
 	private static ServerSocket ss;
+	public static OperatingSystem OS;
 	
 	@Override
 	public void start(Stage window) {
 		
 		try {
+			
+			System.out.println("detecting os...");
+			detectOS();
+			
+			//Git g = new Git();
+			//g.execute("dir");
+			
 			System.out.println("checking for updates...");
 			ConnectionManager.checkUpdates();
 			
-			// make sure all files are loaded 
-			FileManager.loadConfigurations();
+			FileManager.loadConfigurations(Git.getRepositories(), Git.getIgnores());
 			
 			System.out.println("loading scenes...");
 			// loading anything from FXMLLoader calls the initialize method in MainController
@@ -106,8 +113,34 @@ public class Main extends Application implements Runnable {
 		}
 	}
 	
+	public enum OperatingSystem {
+	    Windows, MacOS, Linux, Other
+	};
+	
 	@Override
 	public void stop(){
 	    ExceptionHandler.exit();
+	}
+	
+	/**
+	 * finds the current os the user is running and sets the main.OS to that type
+	 */
+	private void detectOS() {
+		
+		String os = System.getProperty("os.name").toLowerCase();
+		
+		if(os.contains("windows")) {
+			Main.OS = OperatingSystem.Windows;
+			System.out.println("your machine is running " + os);
+		} else if(os.contains("nux")) {
+			Main.OS = OperatingSystem.Linux;
+			System.out.println("your machine is running " + os);
+		} else if(os.contains("macOs")) {
+			Main.OS = OperatingSystem.MacOS;
+			System.out.println("your machine is running " + os);
+		} else {
+			Main.OS = OperatingSystem.Other;
+			System.out.println("java could not properly determine your OS");
+		}
 	}
 }

@@ -74,6 +74,7 @@
                   <Label prefHeight="86.0" prefWidth="212.0" text="Size" />
                </children>
             </HBox>
+            <VBox fx:id="vBox_fileContainer" prefHeight="463.0" prefWidth="877.0" />
          </children>
       </VBox>
    </center>

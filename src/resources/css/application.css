@@ -1,5 +1,22 @@
 /* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
 
-.root {
-	-fx-background-color: rgb(128,128,128);
-}  
+.button {
+    -fx-background-color: #4E5152;
+    -fx-background-radius: 0;
+    -fx-font: 15 caslon;
+    -fx-text-fill: #9BA5A8;
+    -fx-alignment: baseline-left;
+}
+
+#vBox_repositories {
+	-fx-background-color: #4E5152;
+    -fx-background-radius: 0;
+}
+
+#vBox_mainContainer {
+	-fx-background-color: #2B2D2E;
+}
+
+#buttonBar_mainBar {
+	-fx-background-color: #4E5152;
+}

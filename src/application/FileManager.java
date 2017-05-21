@@ -14,7 +14,6 @@ import java.util.Scanner;
 import javafx.stage.DirectoryChooser;
 
 /**
- * TODO add a "dump" file that stores an error log
  * 
  * A general file handler that manages files stored on this computer
  * not meant to hold any important code, just a lot of general purpose methods
@@ -28,84 +27,14 @@ public class FileManager {
 		
 	}
 
-	// initialized repositories
-	private static ArrayList<File> repositories = new ArrayList<File>();
-	
-	private static ArrayList<String> ignores = new ArrayList<String>();
-	
-	/**
-	 * open a file explorer and have the user choose a repository location
-	 * this creates a sc.conf file in this application that points to that file path
-	 * and it also creates another sc.conf file in their selected directory
-	 */
-	public static void initRepository() {
-		
-		System.out.println("initializing repository...");
-		
-		// choose a folder
-		DirectoryChooser dc = new DirectoryChooser();
-		dc.setTitle("new repository");
-		
-		File repository = dc.showDialog(null);
-		
-		if(repository != null && repository.isDirectory()) {
-			
-			// create a configuration file at the given directory
-			try {
-				
-				PrintWriter pw;
-				
-				// configuration file in another folder
-				File remoteConf = new File(repository.getPath() + "/sc.conf");
-				
-				// local configuration file
-				File mainConf = new File("D:\\Programs\\eclipse\\Source Connect\\src\\application\\conf\\sc.conf");
-				// validate mainConf
-				createConfig(mainConf);
-				
-				// store the new file path in sc.conf
-				if(mainConf.exists()) {
-					
-					pw = new PrintWriter(mainConf);
-					
-					System.out.println("logging new repository in main sc.conf");
-					
-					pw.println("REPOSITORY " + repository.getAbsoluteFile());
-					
-					pw.close();
-					
-				}
 
-				// initialize remoteConf
-				if(!remoteConf.exists()) {
-					
-					pw = new PrintWriter(remoteConf);
-					pw.println("# This is the configuration file for your Source Connect repository");
-					pw.println("# Do not change any values presented in this file, unless you are sure of your intentions.");			    
-					
-					pw.close();
-					
-				} else {
-					
-					System.out.println("directory " + remoteConf.getAbsolutePath() + " is already a repository!");
-					ExceptionHandler.popup("directory " + remoteConf.getAbsolutePath() + " is already a repository!", null, false);
-				}
-				
-			} catch (FileNotFoundException e1) {
-				e1.printStackTrace();
-				
-			}
-			
-		} else {
-			System.err.println("Directory " + repository.getAbsolutePath() + " is invalid.");
-		}	
-	}
+
 	
 	/**
 	 * loads any relevant data from the main configuration folder into memory
 	 * 
 	 */
-	public static void loadConfigurations() {
+	public static void loadConfigurations(ArrayList<File> repositories, ArrayList<String> ignores) {
 		
 		try {
 			
@@ -114,7 +43,7 @@ public class FileManager {
 			File mainConf = new File("D:\\Programs\\eclipse\\Source Connect\\src\\application\\conf\\sc.conf");
 			
 			if(!mainConf.exists()) {
-				createConfig(mainConf);
+				createConfiguration(mainConf);
 			}
 			
 			Scanner s = new Scanner(mainConf);
@@ -134,15 +63,11 @@ public class FileManager {
 					
 					File repo = new File(line.substring(11));
 					repositories.add(repo);
-					
-					System.out.println("repository: " + repo.getAbsolutePath() + " has been loaded into memory");
-					
+										
 				} else if(line.startsWith("IGNORE")) {
 
 					ignores.add(line.substring(7));
-					
-					System.out.println("ignore: " + line.substring(7) + " has been loaded into memory");
-					
+										
 				} else if(line.startsWith("REMOTE")) {
 					
 					
@@ -165,10 +90,6 @@ public class FileManager {
 			ExceptionHandler.popup("sc.conf is empty!", e1, true);
 		}
 
-	}
-	
-	public static ArrayList<String> getIgnores() {
-		return ignores;
 	}
 
 	/**
@@ -224,10 +145,6 @@ public class FileManager {
 		return null;
 	}
 
-	public static ArrayList<File> getRepositories() {
-		return repositories;
-	}
-	
 	/**
 	 * TODO decide if we should hide the conf file?
 	 * WIP
@@ -273,7 +190,7 @@ public class FileManager {
 	 * 
 	 * @param path of creation
 	 */
-	private static void createConfig(File conf) {
+	public static void createConfiguration(File conf) {
 		
 		try {
 	
