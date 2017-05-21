@@ -68,7 +68,7 @@ public class ButtonController extends MainController {
 					
 				    b.setOnAction(new EventHandler<ActionEvent>() {
 			             @Override public void handle(ActionEvent e) {
-			                  selectedFile = f;
+			                  m.selectedFile = f;
 			                  
 			                  m.buttonBar_mainBar.setDisable(false);
 			                  displayFiles(f);
