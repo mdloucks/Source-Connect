@@ -8,15 +8,18 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import application.ExceptionHandler;
+import application.FileManager;
 import application.Git;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 /**
  * 
@@ -33,6 +36,7 @@ public class ButtonController extends MainController {
 	public ButtonController(MainController mc) {
 		m = mc;
 		loadRepositoryLabels();
+		loadBreadcrumbs();
 	}
 	
 	/**
@@ -50,6 +54,7 @@ public class ButtonController extends MainController {
 			if(Git.getRepositories().isEmpty()) {
 				
 				System.out.println("no local repositories found");
+				return;
 				
 			} else {
 				
@@ -60,9 +65,7 @@ public class ButtonController extends MainController {
 					
 					Button b = new Button(f.getName());
 					b.setText(f.getName());
-					System.out.println("1");
 					b.prefWidthProperty().bind(m.vBox_repositories.widthProperty());
-					System.out.println("2");
 					b.setGraphic(new ImageView(imgFolder));
 					b.setWrapText(true); 
 					
@@ -91,6 +94,13 @@ public class ButtonController extends MainController {
 		}
 	}
 	
+	protected void loadBreadcrumbs() {
+		Button b = new Button("breadcrumbs 1 ->");
+		Button bc = new Button("breadcrumbs 2 ->");
+		Button bd = new Button("breadcrumbs 3");
+		m.hBox_breadcrumbs.getChildren().addAll(b, bc, bd);
+	}
+	
 	/**
 	 * creates a ton of labels for all the files in a directory and puts them on the main vbox
 	 * 
@@ -99,57 +109,71 @@ public class ButtonController extends MainController {
 	protected void displayFiles(File directory) {
 		
 		if(!directory.isDirectory()) {
+			
 			System.out.println(directory.getName() + " is not a directory");
 			return;
-		}
-		
-		if(directory.list().length == 0) {
-			System.out.println("there are no files to display!");
+			
+		} else if(directory.list().length == 0) {
+			
+			System.out.println("there are no files to display in " + directory.getName());
 			return;
 		}
 		
 		System.out.println("displaying files for " + directory.getName());
-		// remove file buttons
-		m.vBox_fileContainer.getChildren().clear();
 		
-		// returns all of the files in "directory" and loops through them
+		// Hbox container
+		VBox fileContainer = new VBox();
+		m.scrollPane_fileContainer.setContent(null);
+		m.scrollPane_fileContainer.setHbarPolicy(ScrollBarPolicy.NEVER);
+		
 		for(File f : directory.listFiles()) {
 
-			// horizontal container for all of the file info
 			HBox hbox = new HBox(0);
-
-			// get the file extension
-			String extension = "";
 			
-			int i = f.getAbsolutePath().lastIndexOf('.');
+			String name = f.getName().length() > 20 ? f.getName().substring(0, 20) : f.getName();
+			String date =  new SimpleDateFormat("dd/MM/yyyy H:m:s").format(new Date(f.lastModified()));
+			String extension = FileManager.getExtension(f);
+			String size = FileManager.getSize(f);
+			
+			
+			StringBuilder buttonText = new StringBuilder();
+			
+			buttonText.append(name);
+			
+			
+			
+			// name --
+			while(buttonText.length() < 30) {
+				buttonText.append(" ");
+			}
 		
-			if (i > 0) {
-			    extension = f.getAbsolutePath().substring(i+1);
-			} else {
-				extension = "File Folder";
+			
+			buttonText.append("|");
+			
+			buttonText.append(date);
+			
+			// name date --
+			while(buttonText.length() < 60) {
+				buttonText.append(" ");
+			}
+		
+			
+			buttonText.append(extension);
+			
+			// name date extension --
+			while(buttonText.length() < 75) {
+				buttonText.append(" ");
 			}
 			
-			// get precise size
-			long size = f.length() / 1000000000;
-			String strSize = " GB";
+			buttonText.append(size);
 			
-			if(size < 1) {
-				size = f.length() / 1000000;
-				strSize = " MB";
+			while(buttonText.length() < 100) {
+				buttonText.append(" ");
 			}
-			if(size < 1) {
-				size = f.length() / 1000;
-				strSize = " KB";
-			}
+						
+			Button b = new Button(buttonText.toString());
 			
-			Button b = new Button(f.getName() + "\t" 
-					+ new SimpleDateFormat("dd/MM/yyyy H:m:s").format(
-						    new Date(f.lastModified()) 
-							) + "\t" 
-					+ extension + "\t"
-					+ Long.toString(size).concat(strSize));
 			
-
 			b.setOnMouseClicked(new EventHandler<MouseEvent>() {
 				
 			    @Override
@@ -173,9 +197,10 @@ public class ButtonController extends MainController {
 			        }
 			    }
 			});
-			hbox.getChildren().add(b);
-			m.vBox_fileContainer.getChildren().add(hbox);	
+			
+			fileContainer.getChildren().add(b);	
 		}
+		m.scrollPane_fileContainer.setContent(fileContainer);
 	}
 	
 }

@@ -2,6 +2,7 @@ package application;
 	
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -18,6 +19,7 @@ public class Main extends Application implements Runnable {
 	private static ConnectionManager cm;
 	private static ServerSocket ss;
 	public static OperatingSystem OS;
+	public static int port = 9342;
 	
 	@Override
 	public void start(Stage window) {
@@ -104,15 +106,18 @@ public class Main extends Application implements Runnable {
 		while (true) {
 			
 			try {
-				ss = new ServerSocket(9435);
+				ss = new ServerSocket(port);
 				Socket client = ss.accept();
 				cm.saveFile(client);
 				ss.close();
 				System.out.println("successfully closed connection with " + client.getInetAddress().toString());
 				
-			} catch (IOException e) {
-				e.printStackTrace();
-				System.exit(-1);
+			} catch (BindException e) {
+				ExceptionHandler.popup("java could not sucessfully bind to port ", e, false);;
+				stop();
+			} catch(IOException e) {
+				ExceptionHandler.popup("there was an isssue establishing a IO stream with your machine", e, false);;
+				stop();
 			}
 		}
 	}

@@ -10,7 +10,6 @@ import javafx.stage.DirectoryChooser;
 public class Repository {
 
 	
-	
 	/**
 	 * open a file explorer and have the user choose a repository location
 	 * this creates a sc.conf file in this application that points to that file path
@@ -32,7 +31,7 @@ public class Repository {
 				
 				PrintWriter pw;
 				
-				File mainConf = new File("D:\\Programs\\eclipse\\Source Connect\\src\\application\\conf\\sc.conf");
+				File mainConf = new File("sc.conf");
 				
 				// validate mainConf
 				FileManager.createConfiguration(mainConf);

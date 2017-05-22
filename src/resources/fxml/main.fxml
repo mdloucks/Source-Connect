@@ -3,10 +3,10 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ButtonBar?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -44,7 +44,7 @@
                 </Menu>
               </menus>
             </MenuBar>
-            <ButtonBar fx:id="buttonBar_mainBar" prefHeight="40.0" prefWidth="200.0">
+            <ButtonBar fx:id="buttonBar_mainBar" prefHeight="20.0" prefWidth="1090.0">
                <buttons>
                   <Button fx:id="button_commit" mnemonicParsing="false" onAction="#commit" text="Commit" ButtonBar.buttonData="LEFT" />
                   <Button fx:id="button_push" mnemonicParsing="false" onAction="#push" text="Push" ButtonBar.buttonData="LEFT" />
@@ -57,24 +57,31 @@
       </VBox>
    </top>
    <left>
-      <VBox fx:id="vBox_repositories" prefHeight="485.0" prefWidth="213.0" BorderPane.alignment="CENTER" />
+      <VBox fx:id="vBox_repositories" maxHeight="650.0" maxWidth="1.7976931348623157E308" minHeight="450.0" minWidth="-Infinity" prefHeight="650.0" prefWidth="213.0" BorderPane.alignment="CENTER">
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
+         <children>
+            <HBox fx:id="hBox_folderTools" prefHeight="59.0" prefWidth="213.0" />
+         </children>
+      </VBox>
    </left>
    <center>
       <VBox fx:id="vBox_mainContainer" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
          <children>
+            <HBox fx:id="hBox_breadcrumbs" prefHeight="53.0" prefWidth="877.0" />
             <HBox fx:id="hBox_fileInfo" prefHeight="31.0" prefWidth="840.0">
                <children>
-                  <Label prefHeight="31.0" prefWidth="194.0" text="Name">
-                     <padding>
-                        <Insets left="10.0" />
-                     </padding>
-                  </Label>
-                  <Label prefHeight="54.0" prefWidth="233.0" text="Date modified" />
-                  <Label prefHeight="89.0" prefWidth="224.0" text="Type" />
-                  <Label prefHeight="86.0" prefWidth="212.0" text="Size" />
+                  <Button fx:id="button_fileName" mnemonicParsing="false" prefHeight="31.0" prefWidth="273.0" text="Name" />
+                  <Button fx:id="button_fileModified" mnemonicParsing="false" prefHeight="31.0" prefWidth="240.0" text="Date Modified" />
+                  <Button fx:id="button_fileType" mnemonicParsing="false" prefHeight="31.0" prefWidth="160.0" text="File Type" />
+                  <Button fx:id="button_fileSize" mnemonicParsing="false" prefHeight="31.0" prefWidth="160.0" text="Size" />
                </children>
             </HBox>
-            <VBox fx:id="vBox_fileContainer" prefHeight="463.0" prefWidth="877.0" />
+            <ScrollPane fx:id="scrollPane_fileContainer" prefHeight="454.0" prefWidth="877.0" />
          </children>
       </VBox>
    </center>
