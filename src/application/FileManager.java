@@ -225,4 +225,20 @@ public class FileManager {
 			
 		}
 	}
+	
+	/**
+	 * Tests to see if a file at the given path exists.
+	 * 
+	 * @param path
+	 * path to the file in question
+	 * @return
+	 * True, if the file exists. Otherwise, false.
+	 * 
+	 * @author Seth
+	 */
+	public static boolean doesFileExist(String path) {
+		File pathFile = new File(path);
+		return pathFile.exists();
+	}
+	
 }
