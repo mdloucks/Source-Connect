@@ -186,6 +186,33 @@ public class FileManager {
 	}
 	
 	/**
+	 * This method will delete all of the files within the
+	 * specified directory. The files within the directory must
+	 * be deleted first because Java cannot remove directories
+	 * that contain data.
+	 * 
+	 * @param path
+	 * path to the directory to delete
+	 * 
+	 * @see {@link File#delete()}
+	 * 
+	 * @author Seth
+	 */
+	public static void deleteDirectory(String path) {
+		
+		File targetFile = new File(path);
+		
+		String[] files = targetFile.list();
+		File nestedFile;
+		for(String s : files) {
+			nestedFile = new File(targetFile.getPath(), s);
+			nestedFile.delete();
+		}
+		targetFile.delete();
+		
+	}
+	
+	/**
 	 * goes to a given directory and makes a sc.conf file
 	 * 
 	 * @param path of creation
