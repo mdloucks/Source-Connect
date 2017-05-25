@@ -7,6 +7,7 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -57,7 +58,7 @@
       </VBox>
    </top>
    <left>
-      <VBox fx:id="vBox_repositories" maxHeight="650.0" maxWidth="1.7976931348623157E308" minHeight="450.0" minWidth="-Infinity" prefHeight="650.0" prefWidth="213.0" BorderPane.alignment="CENTER">
+      <VBox fx:id="vBox_repositories" maxHeight="650.0" maxWidth="1.7976931348623157E308" minHeight="443.0" minWidth="-Infinity" prefHeight="650.0" prefWidth="213.0" BorderPane.alignment="CENTER">
          <opaqueInsets>
             <Insets />
          </opaqueInsets>
@@ -65,7 +66,18 @@
             <Insets />
          </BorderPane.margin>
          <children>
-            <HBox fx:id="hBox_folderTools" prefHeight="59.0" prefWidth="213.0" />
+            <HBox fx:id="hBox_folderTools" prefHeight="63.0" prefWidth="213.0" />
+            <ScrollPane fx:id="scrollPane_fileRootContainer" prefHeight="443.0" prefWidth="213.0">
+               <content>
+                  <VBox fx:id="vBox_treeViewContainer" prefHeight="438.0" prefWidth="211.0">
+                     <children>
+                        <TreeView fx:id="treeView_localFiles" prefHeight="50.0" prefWidth="211.0" />
+                        <TreeView fx:id="treeView_remoteFiles" prefHeight="50.0" prefWidth="211.0" />
+                        <TreeView fx:id="treeView_thisPCFiles" prefHeight="50.0" prefWidth="211.0" />
+                     </children>
+                  </VBox>
+               </content>
+            </ScrollPane>
          </children>
       </VBox>
    </left>
@@ -78,7 +90,7 @@
                   <Button fx:id="button_fileName" mnemonicParsing="false" prefHeight="31.0" prefWidth="273.0" text="Name" />
                   <Button fx:id="button_fileModified" mnemonicParsing="false" prefHeight="31.0" prefWidth="240.0" text="Date Modified" />
                   <Button fx:id="button_fileType" mnemonicParsing="false" prefHeight="31.0" prefWidth="160.0" text="File Type" />
-                  <Button fx:id="button_fileSize" mnemonicParsing="false" prefHeight="31.0" prefWidth="160.0" text="Size" />
+                  <Button fx:id="button_fileSize" mnemonicParsing="false" prefHeight="25.0" prefWidth="189.0" text="Size" />
                </children>
             </HBox>
             <ScrollPane fx:id="scrollPane_fileContainer" prefHeight="454.0" prefWidth="877.0" />

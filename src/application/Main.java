@@ -137,9 +137,7 @@ public class Main extends Application implements Runnable {
 	private void detectOS() {
 		
 		String os = System.getProperty("os.name").toLowerCase();
-		
-		System.out.println(os);
-		
+				
 		if(os.contains("windows")) {
 			Main.OS = OperatingSystem.Windows;
 			System.out.println("your machine is running " + os);

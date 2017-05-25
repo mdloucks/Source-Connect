@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.Stack;
 
 import application.Repository;
 import javafx.application.Platform;
@@ -18,6 +19,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
+import javafx.scene.control.TreeView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -55,6 +57,9 @@ public class MainController implements Initializable {
 	// scroll panes
 	@FXML
 	protected ScrollPane scrollPane_fileContainer;
+	
+	@FXML
+	protected ScrollPane scrollPane_fileRootContainer;
 	
 	// Menu Items
 	@FXML
@@ -125,6 +130,9 @@ public class MainController implements Initializable {
 	@FXML
 	protected VBox vBox_mainContainer;
 	
+	@FXML
+	protected VBox vBox_treeViewContainer;
+	
 	// horizontal boxes
 	
 	@FXML
@@ -136,18 +144,28 @@ public class MainController implements Initializable {
 	@FXML
 	protected HBox hBox_folderTools;
 	
+	// tree views
+	
+	@FXML
+	protected TreeView<File> treeView_localFiles;
+	
+	@FXML
+	protected TreeView<File> treeView_remoteFiles;
+	
+	@FXML
+	protected TreeView<File> treeView_thisPCFiles;
+	
+	
 	// current selected button reference
 	File selectedFile;
-	
-	protected ArrayList<Button> repositoryButtons;
-	
+		
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		
 		mainController = this;
 		System.out.println("main controller has been initialized");
 		mainController.vBox_repositories.setPrefHeight(441);
-		new ButtonController(mainController);
+		new InputController(mainController);
 	}
 
 	
