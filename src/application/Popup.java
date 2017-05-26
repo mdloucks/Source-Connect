@@ -76,7 +76,7 @@ public class Popup {
 			
 			if(FileManager.doesFileExist(stylePath)) {
 				popupScene.getStylesheets().add(getClass().getResource(stylePath).toExternalForm());
-			} else {
+			} else if(stylePath.length() > 0) {
 				System.out.println("style sheet could not be loaded from: " + stylePath);
 			}
 			
