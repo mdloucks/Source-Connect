@@ -11,8 +11,6 @@ import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-import javafx.stage.DirectoryChooser;
-
 /**
  * 
  * A general file handler that manages files stored on this computer
@@ -144,45 +142,40 @@ public class FileManager {
 		System.out.println("could not find " + file.getName());
 		return null;
 	}
-
+	
 	/**
-	 * TODO decide if we should hide the conf file?
-	 * WIP
+	 * returns the file extension from the given file
+	 * 
 	 * @param f
+	 * @return
 	 */
-	private void hideFile(File f) {
+	public static String getExtension(File f) {
+				
+		int i = f.getAbsolutePath().lastIndexOf('.');
+		return i > 0 ? f.getAbsolutePath().substring(i+1) : "File Folder";
+	}
+	
+	/**
+	 * get a string of the size of a given file in either GB MB or KB
+	 * 
+	 * @return
+	 */
+	public static String getSize(File f) {
 		
-		System.out.println("detecting operating system...");
+		// get size in GB
+		long size = f.length() / 1000000000;
+		String strSize = " GB";
 		
-		String os = System.getProperty("os.name");
-		System.out.println("OS: " + os);
-		os.toLowerCase();		
-		
-		try {
-			
-			if(os.contains("windows")) {
-				
-				System.out.println("your machine is running " + os);
-				
-				Path path = FileSystems.getDefault().getPath(f.getAbsolutePath());
-				Files.setAttribute(path, "dos:hidden", true);
-				
-			} else if(os.contains("mac")) {
-				
-				System.out.println("your machine is running " + os);
-				
-			} else if(os.contains("linux") || os.contains("unix")) {
-				
-				System.out.println("your machine is running " + os);
-				
-			} else {
-				System.out.println("your operating system - " + os + " - has no clear way of instantiating hidden files in java");
-			}
-			
-		} catch (IOException e) {
-
-			e.printStackTrace();
+		if(size < 1) {
+			size = f.length() / 1000;
+			strSize = " MB";
 		}
+		if(size < 1) {
+			size = f.length() / 10;
+			strSize = " KB";
+		}
+		
+		return Long.toString(size).concat(strSize);
 	}
 	
 	/**
