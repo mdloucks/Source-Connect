@@ -1,12 +1,6 @@
 /* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
 
-.button {
-    -fx-background-color: #4E5152;
-    -fx-background-radius: 0;
-    -fx-font: 15 caslon;
-    -fx-text-fill: #9BA5A8;
-    -fx-alignment: baseline-left;
-}
+
 
 #vBox_repositories {
 	-fx-background-color: #4E5152;
@@ -21,6 +15,46 @@
 	-fx-background-color: #4E5152;
 }
 
-.label {
-	-fx-text-fill: #646464;
+#vBox_mainContainer {
+	-fx-background-color: #4E5152;
+}
+
+.button {
+    -fx-background-color: #4E5152;
+    -fx-background-radius: 0;
+    -fx-font: 15 monospace;
+    -fx-text-fill: #9BA5A8;
+    -fx-alignment: baseline-left;
+}
+
+.button:hover{
+    -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
+    -fx-background-insets: 0 0 -1 0, 0, 1, 2;
+    -fx-background-radius: 3px, 3px, 2px, 1px;
+    -fx-text-fill: -fx-text-base-color;
+}
+
+.scroll-bar:horizontal, .scroll-bar:vertical{
+    -fx-background-color:transparent;
+}
+
+/*
+ * SCROLL BARS
+ */
+.increment-button, .decrement-button {
+    -fx-background-color: #232526;
+    -fx-border-color: transparent;
+}
+
+.scroll-bar:horizontal .track,
+.scroll-bar:vertical .track{
+    -fx-background-color: #9BA5A8;
+    -fx-border-color: transparent;
+    -fx-background-radius: 0em;
+}
+
+.scroll-bar:horizontal .thumb,
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #232526;
+    -fx-background-radius: 5em;
 }
