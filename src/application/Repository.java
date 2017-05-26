@@ -32,7 +32,7 @@ public class Repository {
 				
 				PrintWriter pw;
 				
-				File mainConf = new File("D:\\Programs\\eclipse\\Source Connect\\src\\application\\conf\\sc.conf");
+				File mainConf = new File("sc.conf");
 				
 				// validate mainConf
 				FileManager.createConfiguration(mainConf);
