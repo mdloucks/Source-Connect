@@ -2,6 +2,7 @@ package application;
 	
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -18,6 +19,7 @@ public class Main extends Application implements Runnable {
 	private static ConnectionManager cm;
 	private static ServerSocket ss;
 	public static OperatingSystem OS;
+	public static int port = 9342;
 	
 	@Override
 	public void start(Stage window) {
@@ -27,11 +29,15 @@ public class Main extends Application implements Runnable {
 			System.out.println("detecting os...");
 			detectOS();
 			
-			//Git g = new Git();
-			//g.execute("dir");
+			Git g = new Git();
+			g.execute("ls");
 			
-			System.out.println("checking for updates...");
-			ConnectionManager.checkUpdates();
+			if(OS.equals(OperatingSystem.Windows)) {
+				System.out.println("checking for updates...");
+				ConnectionManager.checkUpdates();
+			} else {
+				System.out.println("not checking for updates due to os");
+			}
 			
 			FileManager.loadConfigurations(Git.getRepositories(), Git.getIgnores());
 			
@@ -100,15 +106,18 @@ public class Main extends Application implements Runnable {
 		while (true) {
 			
 			try {
-				ss = new ServerSocket(9435);
+				ss = new ServerSocket(port);
 				Socket client = ss.accept();
 				cm.saveFile(client);
 				ss.close();
 				System.out.println("successfully closed connection with " + client.getInetAddress().toString());
 				
-			} catch (IOException e) {
-				e.printStackTrace();
-				System.exit(-1);
+			} catch (BindException e) {
+				ExceptionHandler.popup("java could not sucessfully bind to port ", e, false);;
+				stop();
+			} catch(IOException e) {
+				ExceptionHandler.popup("there was an isssue establishing a IO stream with your machine", e, false);;
+				stop();
 			}
 		}
 	}
@@ -128,14 +137,14 @@ public class Main extends Application implements Runnable {
 	private void detectOS() {
 		
 		String os = System.getProperty("os.name").toLowerCase();
-		
+				
 		if(os.contains("windows")) {
 			Main.OS = OperatingSystem.Windows;
 			System.out.println("your machine is running " + os);
 		} else if(os.contains("nux")) {
 			Main.OS = OperatingSystem.Linux;
 			System.out.println("your machine is running " + os);
-		} else if(os.contains("macOs")) {
+		} else if(os.contains("mac")) {
 			Main.OS = OperatingSystem.MacOS;
 			System.out.println("your machine is running " + os);
 		} else {

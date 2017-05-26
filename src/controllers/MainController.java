@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.Stack;
 
 import application.Repository;
 import javafx.application.Platform;
@@ -15,8 +16,10 @@ import javafx.scene.control.ButtonBar;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
+import javafx.scene.control.TreeView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -26,6 +29,8 @@ public class MainController implements Initializable {
 	public MainController() {
 		System.out.println("initializing main controller...");
 	}
+	
+	public static MainController mainController;
 	
 	// References to all of our labels
 	
@@ -48,6 +53,13 @@ public class MainController implements Initializable {
 	protected Menu menu_help;
 	@FXML
 	protected Menu menu_new;
+	
+	// scroll panes
+	@FXML
+	protected ScrollPane scrollPane_fileContainer;
+	
+	@FXML
+	protected ScrollPane scrollPane_fileRootContainer;
 	
 	// Menu Items
 	@FXML
@@ -89,6 +101,21 @@ public class MainController implements Initializable {
 	@FXML
 	protected Button button_push;
 	
+	// file buttons
+	
+	@FXML 
+	protected Button button_fileName;
+	
+	@FXML 
+	protected Button button_fileModified;
+	
+	@FXML 
+	protected Button button_fileType;
+	
+	@FXML
+	protected Button button_fileSize;
+	
+	
 	// vboxes
 	
 	@FXML 
@@ -104,23 +131,41 @@ public class MainController implements Initializable {
 	protected VBox vBox_mainContainer;
 	
 	@FXML
-	protected VBox vBox_fileContainer;
+	protected VBox vBox_treeViewContainer;
 	
-	// hboxes
+	// horizontal boxes
 	
 	@FXML
 	protected HBox hBox_fileInfo;
 	
+	@FXML
+	protected HBox hBox_breadcrumbs;
+	
+	@FXML
+	protected HBox hBox_folderTools;
+	
+	// tree views
+	
+	@FXML
+	protected TreeView<File> treeView_localFiles;
+	
+	@FXML
+	protected TreeView<File> treeView_remoteFiles;
+	
+	@FXML
+	protected TreeView<File> treeView_thisPCFiles;
+	
+	
 	// current selected button reference
 	File selectedFile;
-	
-	protected ArrayList<Button> repositoryButtons;
-	
+		
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		
+		mainController = this;
 		System.out.println("main controller has been initialized");
-		new ButtonController(this);
+		mainController.vBox_repositories.setPrefHeight(441);
+		new InputController(mainController);
 	}
 
 	
@@ -147,23 +192,23 @@ public class MainController implements Initializable {
 	
 	// Committing 
 	public void commit(ActionEvent event) {
-		System.out.println("committing repository " + selectedFile.getName());
+		System.out.println("committing repository ");
 	}
 	
 	public void push(ActionEvent event) {
-		System.out.println("pushing repository " + selectedFile.getName());
+		System.out.println("pushing repository ");
 	}
 	
 	public void pull(ActionEvent event) {
-		System.out.println("pulling repository " + selectedFile.getName());
+		System.out.println("pulling repository ");
 	}
 	
 	public void fetch(ActionEvent event) {
-		System.out.println("fetching repository " + selectedFile.getName());
+		System.out.println("fetching repository ");
 	}
 	
 	public void stage(ActionEvent event) {
-		System.out.println("staging repository " + selectedFile.getName());
+		System.out.println("staging repository ");
 	}
 	
 	public void initRepository(ActionEvent e) {
