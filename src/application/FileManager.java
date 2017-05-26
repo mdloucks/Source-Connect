@@ -4,9 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -25,9 +22,6 @@ public class FileManager {
 		
 	}
 
-
-
-	
 	/**
 	 * loads any relevant data from the main configuration folder into memory
 	 * 
@@ -38,7 +32,7 @@ public class FileManager {
 			
 			System.out.println("checking configurations...");
 			
-			File mainConf = new File("D:\\Programs\\eclipse\\Source Connect\\src\\application\\conf\\sc.conf");
+			File mainConf = new File("sc.conf");
 			
 			if(!mainConf.exists()) {
 				createConfiguration(mainConf);
@@ -161,7 +155,7 @@ public class FileManager {
 	 * @return
 	 */
 	public static String getSize(File f) {
-		
+    
 		// get size in GB
 		long size = f.length() / 1000000000;
 		String strSize = " GB";
@@ -176,8 +170,8 @@ public class FileManager {
 		}
 		
 		return Long.toString(size).concat(strSize);
-	}
-	
+  }
+  
 	/**
 	 * This method will delete all of the files within the
 	 * specified directory. The files within the directory must
@@ -202,7 +196,6 @@ public class FileManager {
 			nestedFile.delete();
 		}
 		targetFile.delete();
-		
 	}
 	
 	/**
