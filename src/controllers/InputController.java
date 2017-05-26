@@ -248,6 +248,8 @@ public class InputController extends MainController {
 			            	
 			                try {
 			                	
+			                	controller.selectedFile = f;
+			                	
 			                	if(f.isDirectory()) {
 			                		addBreadcrumb(f);
 			                		displayFiles(f);
