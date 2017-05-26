@@ -5,6 +5,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import application.FileManager;
+import application.Popup;
 import application.Repository;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -157,8 +159,34 @@ public class MainController implements Initializable {
 	}
 	
 	// Edit
+	/**
+	 * This method will delete all of the files within the
+	 * selected repository, as well as the repository directory
+	 * itself. The files within the directory must be deleted
+	 * first because Java cannot remove directories that contain
+	 * data.
+	 * 
+	 * @param e
+	 * ActionEvent object
+	 * 
+	 * @see {@link File#delete()}
+	 * 
+	 * @author Seth
+	 */
 	public void deleteRepository(ActionEvent e) {
-		// TODO: Delete the selected repository
+		
+		Popup confirmDelete = new Popup("/resources/fxml/confirmation.fxml");
+		
+		if(confirmDelete.getState()) {
+			
+			System.out.println("deleting repository " + selectedFile.getName());
+			
+			FileManager.deleteDirectory(selectedFile.getPath());
+			
+			// TODO: Remove repository from display and config file
+			//vBox_repositories.getChildren().remove(0);
+		}
+		
 	}
 	
 	// Help
