@@ -135,13 +135,32 @@ public class FileManager {
 		}
 		System.out.println("could not find " + file.getName());
 		return null;
-	}
-	
+	}	
 	/**
-	 * returns the file extension from the given file
+	 * This method will delete all of the files within the
+	 * specified directory. The files within the directory must
+	 * be deleted first because Java cannot remove directories
+	 * that contain data.
 	 * 
-	 * @param f
-	 * @return
+	 * @param path
+	 * path to the directory to delete
+	 * 
+	 * @see {@link File#delete()}
+	 * 
+	 * @author Seth
+	 */
+	public static void deleteDirectory(String path) {
+		
+		File targetFile = new File(path);
+		
+		String[] files = targetFile.list();
+		File nestedFile;
+		for(String s : files) {
+			nestedFile = new File(targetFile.getPath(), s);
+			nestedFile.delete();
+		}
+		targetFile.delete();
+		
 	 */
 	public static String getExtension(File f) {
 				
@@ -212,4 +231,20 @@ public class FileManager {
 			
 		}
 	}
+	
+	/**
+	 * Tests to see if a file at the given path exists.
+	 * 
+	 * @param path
+	 * path to the file in question
+	 * @return
+	 * True, if the file exists. Otherwise, false.
+	 * 
+	 * @author Seth
+	 */
+	public static boolean doesFileExist(String path) {
+		File pathFile = new File(path);
+		return pathFile.exists();
+	}
+	
 }

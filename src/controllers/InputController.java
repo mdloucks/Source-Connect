@@ -1,3 +1,4 @@
+
 package controllers;
 
 import java.awt.Desktop;
@@ -15,6 +16,7 @@ import application.Git;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -92,6 +94,17 @@ public class InputController extends MainController {
 			}
 			});
 		
+		 controller.treeView_localFiles.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TreeItem<File>>() {
+			 
+			 // Beware! Voo-doo magic lies below!
+			@Override
+			public void changed(ObservableValue<? extends TreeItem<File>> observable, TreeItem<File> oldValue,
+					TreeItem<File> newValue) {
+				 TreeItem<File> selectedItem = (TreeItem<File>) newValue;
+				 controller.selectedFile = selectedItem.getValue();
+			}
+		 });
+		
 		controller.treeView_thisPCFiles.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TreeItem<File>>() {
 
 			@Override
@@ -101,8 +114,6 @@ public class InputController extends MainController {
 					displayFiles(newValue.getValue());
 			}
 			});
-		
- 
 		
 		thisPCRoot.expandedProperty().addListener(new ChangeListener<Boolean>() {
 		    @Override
@@ -128,7 +139,16 @@ public class InputController extends MainController {
 			
 			for(File f : Git.getRepositories()) {
 				TreeItem<File> item = new TreeItem<File>(f);
+				EventHandler<MouseEvent> handler = new EventHandler<MouseEvent>() {
+					@Override
+					public void handle(MouseEvent event) {
+						controller.selectedFile = f;
+						System.out.println("Setting: " + f);
+					}
+				};
+				
 				item.setGraphic(new ImageView(img));
+				item.addEventHandler(MouseEvent.ANY, handler);
 				
 				root.getChildren().add(item);
 			}

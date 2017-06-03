@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.Stack;
 
+import application.FileManager;
+import application.Popup;
 import application.Repository;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -185,12 +187,60 @@ public class MainController implements Initializable {
 		}
 	}
 	
+	// Main menu bar actions
+	
+	// File
+	public void initRepository(ActionEvent e) {
+		new Repository();
+	}
+	
+	public void initBranch(ActionEvent e) {
+		// TODO: Create new branch here
+	}
+	
 	public void exit() {
 		Platform.exit();
 		System.exit(0);
 	}
 	
-	// Committing 
+	// Edit
+	/**
+	 * This method will delete all of the files within the
+	 * selected repository, as well as the repository directory
+	 * itself. The files within the directory must be deleted
+	 * first because Java cannot remove directories that contain
+	 * data.
+	 * 
+	 * @param e
+	 * ActionEvent object
+	 * 
+	 * @see {@link File#delete()}
+	 * 
+	 * @author Seth
+	 */
+	public void deleteRepository(ActionEvent e) {
+		
+		Popup confirmDelete = new Popup("/resources/fxml/confirmation.fxml");
+		
+		if(confirmDelete.getState()) {
+			
+			System.out.println("deleting repository " + selectedFile.getName());
+			
+			FileManager.deleteDirectory(selectedFile.getPath());
+			
+			// TODO: Remove repository from display and config file
+			//vBox_repositories.getChildren().remove(0);
+		}
+		
+	}
+	
+	// Help
+	public void openAbout(ActionEvent e) {
+		// TODO: Open an about pop-up
+	}
+	
+	// Repository actions
+	
 	public void commit(ActionEvent event) {
 		System.out.println("committing repository ");
 	}
@@ -211,11 +261,6 @@ public class MainController implements Initializable {
 		System.out.println("staging repository ");
 	}
 	
-	public void initRepository(ActionEvent e) {
-
-		new Repository();
-	}
-
 	public Label getLogin_status() {
 		return login_status;
 	}
@@ -239,7 +284,9 @@ public class MainController implements Initializable {
 	public void setPassword(TextField password) {
 		this.password = password;
 	}
-
+	
+	// Other
+	
 	public Menu getMenu_file() {
 		return menu_file;
 	}
