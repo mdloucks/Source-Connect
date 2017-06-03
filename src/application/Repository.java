@@ -10,7 +10,6 @@ import javafx.stage.DirectoryChooser;
 public class Repository {
 
 	
-	
 	/**
 	 * open a file explorer and have the user choose a repository location
 	 * this creates a sc.conf file in this application that points to that file path

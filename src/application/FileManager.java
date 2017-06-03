@@ -4,9 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -25,9 +22,6 @@ public class FileManager {
 		
 	}
 
-
-
-	
 	/**
 	 * loads any relevant data from the main configuration folder into memory
 	 * 
@@ -38,7 +32,7 @@ public class FileManager {
 			
 			System.out.println("checking configurations...");
 			
-			File mainConf = new File("D:\\Programs\\eclipse\\Source Connect\\src\\application\\conf\\sc.conf");
+			File mainConf = new File("sc.conf");
 			
 			if(!mainConf.exists()) {
 				createConfiguration(mainConf);
@@ -141,13 +135,32 @@ public class FileManager {
 		}
 		System.out.println("could not find " + file.getName());
 		return null;
-	}
-	
+	}	
 	/**
-	 * returns the file extension from the given file
+	 * This method will delete all of the files within the
+	 * specified directory. The files within the directory must
+	 * be deleted first because Java cannot remove directories
+	 * that contain data.
 	 * 
-	 * @param f
-	 * @return
+	 * @param path
+	 * path to the directory to delete
+	 * 
+	 * @see {@link File#delete()}
+	 * 
+	 * @author Seth
+	 */
+	public static void deleteDirectory(String path) {
+		
+		File targetFile = new File(path);
+		
+		String[] files = targetFile.list();
+		File nestedFile;
+		for(String s : files) {
+			nestedFile = new File(targetFile.getPath(), s);
+			nestedFile.delete();
+		}
+		targetFile.delete();
+		
 	 */
 	public static String getExtension(File f) {
 				
@@ -176,33 +189,6 @@ public class FileManager {
 		}
 		
 		return Long.toString(size).concat(strSize);
-	}
-	
-	/**
-	 * This method will delete all of the files within the
-	 * specified directory. The files within the directory must
-	 * be deleted first because Java cannot remove directories
-	 * that contain data.
-	 * 
-	 * @param path
-	 * path to the directory to delete
-	 * 
-	 * @see {@link File#delete()}
-	 * 
-	 * @author Seth
-	 */
-	public static void deleteDirectory(String path) {
-		
-		File targetFile = new File(path);
-		
-		String[] files = targetFile.list();
-		File nestedFile;
-		for(String s : files) {
-			nestedFile = new File(targetFile.getPath(), s);
-			nestedFile.delete();
-		}
-		targetFile.delete();
-		
 	}
 	
 	/**
