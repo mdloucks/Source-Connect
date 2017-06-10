@@ -10,7 +10,7 @@
    <center>
       <Pane fx:id="pane_message" maxHeight="210.0" prefHeight="200.0" prefWidth="150.0" BorderPane.alignment="CENTER">
          <children>
-            <Label fx:id="label_text" alignment="CENTER" contentDisplay="CENTER" layoutY="5.0" lineSpacing="1.5" maxHeight="300.0" maxWidth="500.0" minHeight="100.0" minWidth="200.0" prefHeight="100.0" prefWidth="400.0" text="Are you sure you want to ?" textAlignment="CENTER" textOverrun="WORD_ELLIPSIS">
+            <Label fx:id="label_text" alignment="CENTER" contentDisplay="CENTER" layoutY="5.0" lineSpacing="1.5" maxHeight="300.0" maxWidth="500.0" minHeight="100.0" minWidth="200.0" prefHeight="100.0" prefWidth="400.0" text="Are you sure you want to ?" wrapText="true" textAlignment="CENTER" textOverrun="WORD_ELLIPSIS">
                <font>
                   <Font size="18.0" />
                </font>
