@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
@@ -35,60 +36,29 @@ public class FileManager {
 	 */
 	public static void loadConfigurations(ArrayList<File> repositories, ArrayList<String> ignores) {
 		
-		try {
-			
-			System.out.println("checking configurations...");
-			
-			File mainConf = new File("sc.conf");
-			
-			if(!mainConf.exists()) {
-				createConfiguration(mainConf);
-			}
-			
-			Scanner s = new Scanner(mainConf);
-			
-			String line;
-			// read each line of the file
-			while(s.hasNextLine() && (line = s.nextLine()) != null) {
-
-				line.trim();
-				
-				// skip commented lines
-				if(line.startsWith("#") || line.startsWith("//")) {
-					continue;
-				}
-				
-				if(line.startsWith("REPOSITORY")) {
-					
-					File repo = new File(line.substring(11));
-					repositories.add(repo);
-										
-				} else if(line.startsWith("IGNORE")) {
-
-					ignores.add(line.substring(7));
-										
-				} else if(line.startsWith("REMOTE")) {
-					
-					
-					System.out.println("remote: WIP" );
-				}
-			}
-			
-			s.close();
-			
-			System.out.println("repositories: " + repositories);
-			System.out.println("ignores: " + ignores);
-			
-		} catch(FileNotFoundException e) {
-			e.printStackTrace();
-			
-			ExceptionHandler.popup("sc.conf has been removed or missplaced from your package, this file is required to run.", e, true);
-			
-		} catch(NoSuchElementException e1) {
-			
-			ExceptionHandler.popup("sc.conf is empty!", e1, true);
+		System.out.println("checking configurations...");
+		
+		String[] fileArray;
+		File currentFile;
+		ConfigFile config = new ConfigFile("sc.conf");
+		
+		// Files
+		fileArray = config.readKeyValue("REPOSITORY");
+		
+		for(int f = 0; f < fileArray.length; f++) {
+			currentFile = new File(fileArray[f]);
+			repositories.add(currentFile);
 		}
-
+		
+		// Ignores
+		fileArray = config.readKeyValue("IGNORE");
+		for(int i = 0; i < fileArray.length; i++) {
+			ignores.add(fileArray[i]);
+		}
+		
+		System.out.println("repositories: " + repositories);
+		System.out.println("ignores: " + ignores);
+		
 	}
 
 	/**
@@ -278,7 +248,7 @@ public class FileManager {
 		
 		try {
 			for(String line : Files.readAllLines(Paths.get(path))) {
-				content = content + line;
+				content = content + line + "\n";
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
