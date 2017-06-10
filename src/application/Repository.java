@@ -20,11 +20,12 @@ public class Repository {
 	public Repository() {
 		
 		System.out.println("initializing repository...");
-		
+				
 		// choose a folder
 		DirectoryChooser dc = new DirectoryChooser();
 		dc.setTitle("new repository");
 		
+		String configContent = ""; // Previous text of the config file
 		File repository = dc.showDialog(null);
 		
 		if(repository != null && repository.isDirectory()) {
@@ -32,8 +33,10 @@ public class Repository {
 			try {
 				
 				PrintWriter pw;
-				
 				File mainConf = new File("sc.conf");
+				
+				// Read the content of the config file
+				configContent = FileManager.readFileContent(mainConf.getAbsolutePath());
 				
 				// validate mainConf
 				FileManager.createConfiguration(mainConf);
@@ -45,12 +48,14 @@ public class Repository {
 					
 					System.out.println("logging new repository in main sc.conf");
 					
+					// Fill the file with the old information
+					pw.print(configContent);
+					
+					// Add new information
 					pw.println("REPOSITORY " + repository.getAbsoluteFile());
 					
 					pw.close();
-					
-					System.out.println(repository.getAbsolutePath());
-					
+										
 					// Repository config file
 					File repConf = new File(repository.getAbsolutePath() + "/sc-local.conf");
 					repConf.createNewFile();
