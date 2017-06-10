@@ -2,6 +2,7 @@ package application;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
@@ -48,12 +49,21 @@ public class Repository {
 					
 					pw.close();
 					
+					System.out.println(repository.getAbsolutePath());
+					
+					// Repository config file
+					File repConf = new File(repository.getAbsolutePath() + "/sc-local.conf");
+					repConf.createNewFile();
+					
 				} else {
 					System.out.println("could not find the main configuration file while initializing a new repository");
 				}
 				
 			} catch (FileNotFoundException e1) {
 				e1.printStackTrace();
+				
+			} catch (IOException e) {
+				e.printStackTrace();
 				
 			}
 			
