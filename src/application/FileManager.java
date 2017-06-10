@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -38,7 +39,7 @@ public class FileManager {
 			
 			System.out.println("checking configurations...");
 			
-			File mainConf = new File("D:\\Programs\\eclipse\\Source Connect\\src\\application\\conf\\sc.conf");
+			File mainConf = new File("sc.conf");
 			
 			if(!mainConf.exists()) {
 				createConfiguration(mainConf);
@@ -259,6 +260,32 @@ public class FileManager {
 	public static boolean doesFileExist(String path) {
 		File pathFile = new File(path);
 		return pathFile.exists();
+	}
+	
+	/**
+	 * Reads the text from the given file path.
+	 * 
+	 * @param path
+	 * path to the text file
+	 * @return
+	 * String containing the information in the given file.
+	 * 
+	 * @author Seth
+	 */
+	public static String getFileContent(String path) {
+		
+		String content = "";
+		
+		try {
+			for(String line : Files.readAllLines(Paths.get(path))) {
+				content = content + line;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("file couldn't be found at: " + path);
+		}
+		
+		return content;
 	}
 	
 }
