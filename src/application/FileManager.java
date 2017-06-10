@@ -272,7 +272,7 @@ public class FileManager {
 	 * 
 	 * @author Seth
 	 */
-	public static String getFileContent(String path) {
+	public static String readFileContent(String path) {
 		
 		String content = "";
 		
