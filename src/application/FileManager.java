@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
 import java.util.ArrayList;
 
 /**
@@ -21,6 +22,7 @@ public class FileManager {
 	public FileManager() {
 		
 	}
+  
 	/**
 	 * loads any relevant data from the main configuration folder into memory
 	 * 
@@ -45,6 +47,7 @@ public class FileManager {
 		fileArray = config.readKeyValue("IGNORE");
 		for(int i = 0; i < fileArray.length; i++) {
 			ignores.add(fileArray[i]);
+
 		}
 
 	}
@@ -100,13 +103,32 @@ public class FileManager {
 		}
 		System.out.println("could not find " + file.getName());
 		return null;
-	}
-	
+	}	
 	/**
-	 * returns the file extension from the given file
+	 * This method will delete all of the files within the
+	 * specified directory. The files within the directory must
+	 * be deleted first because Java cannot remove directories
+	 * that contain data.
 	 * 
-	 * @param f
-	 * @return
+	 * @param path
+	 * path to the directory to delete
+	 * 
+	 * @see {@link File#delete()}
+	 * 
+	 * @author Seth
+	 */
+	public static void deleteDirectory(String path) {
+		
+		File targetFile = new File(path);
+		
+		String[] files = targetFile.list();
+		File nestedFile;
+		for(String s : files) {
+			nestedFile = new File(targetFile.getPath(), s);
+			nestedFile.delete();
+		}
+		targetFile.delete();
+		
 	 */
 	public static String getExtension(File f) {
 				
@@ -135,33 +157,6 @@ public class FileManager {
 		}
 		
 		return Long.toString(size).concat(strSize);
-	}
-	
-	/**
-	 * This method will delete all of the files within the
-	 * specified directory. The files within the directory must
-	 * be deleted first because Java cannot remove directories
-	 * that contain data.
-	 * 
-	 * @param path
-	 * path to the directory to delete
-	 * 
-	 * @see {@link File#delete()}
-	 * 
-	 * @author Seth
-	 */
-	public static void deleteDirectory(String path) {
-		
-		File targetFile = new File(path);
-		
-		String[] files = targetFile.list();
-		File nestedFile;
-		for(String s : files) {
-			nestedFile = new File(targetFile.getPath(), s);
-			nestedFile.delete();
-		}
-		targetFile.delete();
-		
 	}
 	
 	/**

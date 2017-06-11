@@ -318,23 +318,23 @@ public class MainController implements Initializable {
 	// ----  Repository actions  ----
 	
 	public void commit(ActionEvent event) {
-		System.out.println("committing repository " + selectedFile.getName());
+		System.out.println("committing repository ");
 	}
 	
 	public void push(ActionEvent event) {
-		System.out.println("pushing repository " + selectedFile.getName());
+		System.out.println("pushing repository ");
 	}
 	
 	public void pull(ActionEvent event) {
-		System.out.println("pulling repository " + selectedFile.getName());
+		System.out.println("pulling repository ");
 	}
 	
 	public void fetch(ActionEvent event) {
-		System.out.println("fetching repository " + selectedFile.getName());
+		System.out.println("fetching repository ");
 	}
 	
 	public void stage(ActionEvent event) {
-		System.out.println("staging repository " + selectedFile.getName());
+		System.out.println("staging repository ");
 	}
 	
 	public Label getLogin_status() {

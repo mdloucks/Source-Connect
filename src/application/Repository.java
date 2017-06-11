@@ -9,6 +9,7 @@ import javafx.stage.DirectoryChooser;
 public class Repository {
 
 	private String path = "";
+
 	
 	/**
 	 * open a file explorer and have the user choose a repository location
