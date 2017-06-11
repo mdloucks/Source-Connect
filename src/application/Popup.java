@@ -84,10 +84,17 @@ public class Popup {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-				
+		
+	}
+	
+	/**
+	 * Will show and halt the operations of the program
+	 * until the pop-up is closed. Call this after setting
+	 * any label or button text.
+	 */
+	public void showPopup() {
 		popup.showAndWait();
 		// Will halt all operation until pop-up is closed
-		
 	}
 	
 	/**

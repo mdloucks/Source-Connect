@@ -29,7 +29,7 @@ public class Git {
 	 */
 	public void execute(String command) {
 
-		System.out.println("executing command \"" + command);
+		System.out.println("executing command \"" + command + "\"");
 
 		switch (Main.OS) {
 

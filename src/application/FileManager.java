@@ -4,9 +4,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import java.util.ArrayList;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
 
 /**
  * 
@@ -21,65 +22,32 @@ public class FileManager {
 	public FileManager() {
 		
 	}
-
+  
 	/**
 	 * loads any relevant data from the main configuration folder into memory
 	 * 
 	 */
 	public static void loadConfigurations(ArrayList<File> repositories, ArrayList<String> ignores) {
 		
-		try {
-			
-			System.out.println("checking configurations...");
-			
-			File mainConf = new File("sc.conf");
-			
-			if(!mainConf.exists()) {
-				createConfiguration(mainConf);
-			}
-			
-			Scanner s = new Scanner(mainConf);
-			
-			String line;
-			// read each line of the file
-			while(s.hasNextLine() && (line = s.nextLine()) != null) {
+		System.out.println("checking configurations...");
+		
+		String[] fileArray;
+		File currentFile;
+		ConfigFile config = new ConfigFile("sc.conf");
+		
+		// Files
+		fileArray = config.readKeyValue("REPOSITORY");
+		
+		for(int f = 0; f < fileArray.length; f++) {
+			currentFile = new File(fileArray[f]);
+			repositories.add(currentFile);
+		}
+		
+		// Ignores
+		fileArray = config.readKeyValue("IGNORE");
+		for(int i = 0; i < fileArray.length; i++) {
+			ignores.add(fileArray[i]);
 
-				line.trim();
-				
-				// skip commented lines
-				if(line.startsWith("#") || line.startsWith("//")) {
-					continue;
-				}
-				
-				if(line.startsWith("REPOSITORY")) {
-					
-					File repo = new File(line.substring(11));
-					repositories.add(repo);
-										
-				} else if(line.startsWith("IGNORE")) {
-
-					ignores.add(line.substring(7));
-										
-				} else if(line.startsWith("REMOTE")) {
-					
-					
-					System.out.println("remote: WIP" );
-				}
-			}
-			
-			s.close();
-			
-			System.out.println("repositories: " + repositories);
-			System.out.println("ignores: " + ignores);
-			
-		} catch(FileNotFoundException e) {
-			e.printStackTrace();
-			
-			ExceptionHandler.popup("sc.conf has been removed or missplaced from your package, this file is required to run.", e, true);
-			
-		} catch(NoSuchElementException e1) {
-			
-			ExceptionHandler.popup("sc.conf is empty!", e1, true);
 		}
 
 	}
@@ -245,6 +213,32 @@ public class FileManager {
 	public static boolean doesFileExist(String path) {
 		File pathFile = new File(path);
 		return pathFile.exists();
+	}
+	
+	/**
+	 * Reads the text from the given file path.
+	 * 
+	 * @param path
+	 * path to the text file
+	 * @return
+	 * String containing the information in the given file.
+	 * 
+	 * @author Seth
+	 */
+	public static String readFileContent(String path) {
+		
+		String content = "";
+		
+		try {
+			for(String line : Files.readAllLines(Paths.get(path))) {
+				content = content + line + "\n";
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("file couldn't be found at: " + path);
+		}
+		
+		return content;
 	}
 	
 }

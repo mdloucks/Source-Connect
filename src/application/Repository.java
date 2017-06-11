@@ -2,12 +2,13 @@ package application;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import javafx.stage.DirectoryChooser;
 
 public class Repository {
+
+	private String path = "";
 
 	
 	/**
@@ -18,46 +19,31 @@ public class Repository {
 	public Repository() {
 		
 		System.out.println("initializing repository...");
-		
+				
 		// choose a folder
 		DirectoryChooser dc = new DirectoryChooser();
 		dc.setTitle("new repository");
 		
+		ConfigFile mainConfig = new ConfigFile("sc.conf");
 		File repository = dc.showDialog(null);
+		path = repository.getAbsolutePath();
 		
 		if(repository != null && repository.isDirectory()) {
 			
-			try {
-				
-				PrintWriter pw;
-				
-				File mainConf = new File("sc.conf");
-				
-				// validate mainConf
-				FileManager.createConfiguration(mainConf);
-				
-				// store the new file path in sc.conf
-				if(mainConf.exists()) {
-					
-					pw = new PrintWriter(mainConf);
-					
-					System.out.println("logging new repository in main sc.conf");
-					
-					pw.println("REPOSITORY " + repository.getAbsoluteFile());
-					
-					pw.close();
-					
-				} else {
-					System.out.println("could not find the main configuration file while initializing a new repository");
-				}
-				
-			} catch (FileNotFoundException e1) {
-				e1.printStackTrace();
-				
-			}
+			// store the new file path in sc.conf
+			
+			System.out.println("logging new repository in main sc.conf");
+			
+			// Add new information					
+			mainConfig.addRepository(path);
+			
+								
+			// Repository config file
+			ConfigFile repConfig = new ConfigFile(path + "/sc-local.conf", ConfigFile.Type.REP);
+			repConfig.indexFiles();
 			
 		} else {
-			System.err.println("Directory " + repository.getAbsolutePath() + " is invalid.");
+			System.err.println("Directory " + path + " is invalid.");
 		}	
 	}
 	
@@ -65,6 +51,12 @@ public class Repository {
 	
 	public ArrayList<File> getFiles() {
 		return files;
+	}
+	
+	// Get / Set methods
+	
+	public String getPath() {
+		return path;
 	}
 	
 }

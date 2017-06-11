@@ -1,16 +1,19 @@
 package controllers;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
-import java.util.Stack;
 
+import application.ConfigFile;
 import application.FileManager;
+import application.Git;
 import application.Popup;
 import application.Repository;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -21,7 +24,11 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
+import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -187,11 +194,65 @@ public class MainController implements Initializable {
 		}
 	}
 	
-	// Main menu bar actions
+	/**
+	 * Adds a repository label to the specified group
+	 * on the display (local, remote, PC).
+	 * 
+	 * @param pathToRep
+	 * path to the repository that will be added
+	 * @param groupName
+	 * "local" - Local Repository<br>
+	 * "remote" - Remote Repository<br>
+	 * "pc" - This PC Repository
+	 */
+	public void addRepositoryItem(String pathToRep, String groupName) {
+		
+		TreeItem<File> group = null;
+		TreeItem<File> repItem = null;
+		Image img = null;
+		File repFile = new File(pathToRep);
+		Git.getRepositories().add(repFile);
+		
+		// Load the group
+		if(groupName.equalsIgnoreCase("local")) {
+			group = treeView_localFiles.getRoot();
+		} else if(groupName.equalsIgnoreCase("remote")) {
+			group = treeView_remoteFiles.getRoot();
+		} else if(groupName.equalsIgnoreCase("pc")) {
+			group = treeView_thisPCFiles.getRoot();
+		}
+		
+		// Load item image
+		try {
+			img = new Image(getClass().getResource("/resources/img/icon_folder.png").toURI().toString(), 16, 16, true, true);
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+		
+		// Create the item and the handler
+		repItem = new TreeItem<File>(repFile);
+		
+		EventHandler<MouseEvent> handler = new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				selectedFile = repFile;
+			}
+		};
+		repItem.setGraphic(new ImageView(img));
+		repItem.addEventHandler(MouseEvent.ANY, handler);
+		
+		group.getChildren().add(repItem);
+	}
 	
-	// File
+	// ----  Main menu bar actions  ----
+	
+	// ------------  File  ------------
 	public void initRepository(ActionEvent e) {
-		new Repository();
+		// Create the repository
+		Repository repository = new Repository();
+		
+		// Add it to the display
+		addRepositoryItem(repository.getPath(), "local");
 	}
 	
 	public void initBranch(ActionEvent e) {
@@ -203,7 +264,7 @@ public class MainController implements Initializable {
 		System.exit(0);
 	}
 	
-	// Edit
+	// ------------  Edit  ------------
 	/**
 	 * This method will delete all of the files within the
 	 * selected repository, as well as the repository directory
@@ -221,25 +282,40 @@ public class MainController implements Initializable {
 	public void deleteRepository(ActionEvent e) {
 		
 		Popup confirmDelete = new Popup("/resources/fxml/confirmation.fxml");
+		ConfigFile mainConf = new ConfigFile("sc.conf");
+		TreeItem<File> localReps = treeView_localFiles.getSelectionModel().getSelectedItem();
+		int repIndex = 0; // Index of repository in the config file
+		
+		confirmDelete.setText("Are you sure you want to delete the repository " + selectedFile.getName() + "?");
+		confirmDelete.showPopup();
+		repIndex = mainConf.getRepositoryIndex(selectedFile.getPath());
 		
 		if(confirmDelete.getState()) {
 			
 			System.out.println("deleting repository " + selectedFile.getName());
 			
-			FileManager.deleteDirectory(selectedFile.getPath());
+			try {
+				FileManager.deleteDirectory(selectedFile.getPath());
+			} catch(NullPointerException n) {
+				n.printStackTrace();
+				System.out.println("the directory could not be found at: " + selectedFile.getAbsolutePath());
+			}
 			
-			// TODO: Remove repository from display and config file
-			//vBox_repositories.getChildren().remove(0);
+			// Remove repository from config file and display
+			mainConf.removeRepository(selectedFile.getPath());
+			// 0 is the index of the selected item
+			localReps.getParent().getChildren().remove(repIndex);
+			
 		}
 		
 	}
 	
-	// Help
+	// ------------  Help  ------------
 	public void openAbout(ActionEvent e) {
 		// TODO: Open an about pop-up
 	}
 	
-	// Repository actions
+	// ----  Repository actions  ----
 	
 	public void commit(ActionEvent event) {
 		System.out.println("committing repository ");
