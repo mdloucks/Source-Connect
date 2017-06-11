@@ -1,11 +1,13 @@
 package controllers;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.Stack;
 
+import application.ConfigFile;
 import application.FileManager;
 import application.Popup;
 import application.Repository;
@@ -21,6 +23,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
+import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -221,15 +224,29 @@ public class MainController implements Initializable {
 	public void deleteRepository(ActionEvent e) {
 		
 		Popup confirmDelete = new Popup("/resources/fxml/confirmation.fxml");
+		ConfigFile mainConf = new ConfigFile("sc.conf");
+		TreeItem<File> repository = treeView_localFiles.getSelectionModel().getSelectedItem();
+		
+		
+		confirmDelete.setText("Are you sure you want to delete the repository " + selectedFile.getName() + "?");
+		confirmDelete.showPopup();
 		
 		if(confirmDelete.getState()) {
 			
 			System.out.println("deleting repository " + selectedFile.getName());
 			
-			FileManager.deleteDirectory(selectedFile.getPath());
+			try {
+				FileManager.deleteDirectory(selectedFile.getPath());
+			} catch(NullPointerException n) {
+				n.printStackTrace();
+				System.out.println("the directory could not be found at: " + selectedFile.getAbsolutePath());
+			}
 			
-			// TODO: Remove repository from display and config file
-			//vBox_repositories.getChildren().remove(0);
+			// Remove repository from config file and display
+			mainConf.removeRepository(selectedFile.getPath());
+			// 0 is the index of the selected item
+			repository.getParent().getChildren().remove(0);
+			
 		}
 		
 	}
