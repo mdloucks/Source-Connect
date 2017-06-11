@@ -90,6 +90,17 @@ public class InputController extends MainController {
 					}
 				});
 		
+		controller.treeView_localFiles.getSelectionModel().selectedItemProperty()
+				.addListener(new ChangeListener<TreeItem<File>>() {
+					
+					// Beware! Voo-doo magic lies below!
+					@Override
+					public void changed(ObservableValue<? extends TreeItem<File>> observable, TreeItem<File> oldValue, TreeItem<File> newValue) {
+						TreeItem<File> selectedItem = (TreeItem<File>) newValue;
+						controller.selectedFile = selectedItem.getValue();
+					}
+				});
+		
 		remoteRoot.expandedProperty().addListener(new ChangeListener<Boolean>() {
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean isExpanded) {
