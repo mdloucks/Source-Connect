@@ -90,19 +90,10 @@ public class InputController extends MainController {
 					TreeItem<File> newValue) {
 				controller.hBox_breadcrumbs.getChildren().clear();
 					displayFiles(newValue.getValue());
+					
+					controller.selectedFile = newValue.getValue();
 			}
 			});
-		
-		 controller.treeView_localFiles.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TreeItem<File>>() {
-			 
-			 // Beware! Voo-doo magic lies below!
-			@Override
-			public void changed(ObservableValue<? extends TreeItem<File>> observable, TreeItem<File> oldValue,
-					TreeItem<File> newValue) {
-				 TreeItem<File> selectedItem = (TreeItem<File>) newValue;
-				 controller.selectedFile = selectedItem.getValue();
-			}
-		 });
 		
 		controller.treeView_thisPCFiles.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TreeItem<File>>() {
 
@@ -137,12 +128,12 @@ public class InputController extends MainController {
 			
 			
 			for(File f : Git.getRepositories()) {
+				
 				TreeItem<File> item = new TreeItem<File>(f);
 				EventHandler<MouseEvent> handler = new EventHandler<MouseEvent>() {
 					@Override
 					public void handle(MouseEvent event) {
 						controller.selectedFile = f;
-						System.out.println("Setting: " + f);
 					}
 				};
 				
