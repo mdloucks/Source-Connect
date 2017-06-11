@@ -4,14 +4,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
 
 /**
  * 
@@ -26,10 +21,6 @@ public class FileManager {
 	public FileManager() {
 		
 	}
-
-
-
-	
 	/**
 	 * loads any relevant data from the main configuration folder into memory
 	 * 
@@ -55,10 +46,7 @@ public class FileManager {
 		for(int i = 0; i < fileArray.length; i++) {
 			ignores.add(fileArray[i]);
 		}
-		
-		System.out.println("repositories: " + repositories);
-		System.out.println("ignores: " + ignores);
-		
+
 	}
 
 	/**
