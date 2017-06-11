@@ -10,7 +10,7 @@ import javafx.stage.DirectoryChooser;
 
 public class Repository {
 
-	
+	private String path = "";
 	
 	/**
 	 * open a file explorer and have the user choose a repository location
@@ -25,55 +25,26 @@ public class Repository {
 		DirectoryChooser dc = new DirectoryChooser();
 		dc.setTitle("new repository");
 		
-		String configContent = ""; // Previous text of the config file
+		ConfigFile mainConfig = new ConfigFile("sc.conf");
 		File repository = dc.showDialog(null);
+		path = repository.getAbsolutePath();
 		
 		if(repository != null && repository.isDirectory()) {
 			
-			try {
-				
-				PrintWriter pw;
-				File mainConf = new File("sc.conf");
-				
-				// Read the content of the config file
-				configContent = FileManager.readFileContent(mainConf.getAbsolutePath());
-				
-				// validate mainConf
-				FileManager.createConfiguration(mainConf);
-				
-				// store the new file path in sc.conf
-				if(mainConf.exists()) {
-					
-					pw = new PrintWriter(mainConf);
-					
-					System.out.println("logging new repository in main sc.conf");
-					
-					// Fill the file with the old information
-					pw.print(configContent);
-					
-					// Add new information
-					pw.println("REPOSITORY " + repository.getAbsoluteFile());
-					
-					pw.close();
-										
-					// Repository config file
-					File repConf = new File(repository.getAbsolutePath() + "/sc-local.conf");
-					repConf.createNewFile();
-					
-				} else {
-					System.out.println("could not find the main configuration file while initializing a new repository");
-				}
-				
-			} catch (FileNotFoundException e1) {
-				e1.printStackTrace();
-				
-			} catch (IOException e) {
-				e.printStackTrace();
-				
-			}
+			// store the new file path in sc.conf
+			
+			System.out.println("logging new repository in main sc.conf");
+			
+			// Add new information					
+			mainConfig.addRepository(path);
+			
+								
+			// Repository config file
+			ConfigFile repConfig = new ConfigFile(path + "/sc-local.conf", ConfigFile.Type.REP);
+			repConfig.indexFiles();
 			
 		} else {
-			System.err.println("Directory " + repository.getAbsolutePath() + " is invalid.");
+			System.err.println("Directory " + path + " is invalid.");
 		}	
 	}
 	
@@ -81,6 +52,12 @@ public class Repository {
 	
 	public ArrayList<File> getFiles() {
 		return files;
+	}
+	
+	// Get / Set methods
+	
+	public String getPath() {
+		return path;
 	}
 	
 }
