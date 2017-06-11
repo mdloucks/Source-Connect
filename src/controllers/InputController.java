@@ -1,3 +1,4 @@
+
 package controllers;
 
 import java.awt.Desktop;
@@ -5,9 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 
 import application.ExceptionHandler;
 import application.FileManager;
@@ -15,7 +14,6 @@ import application.Git;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -28,10 +26,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-
 /**
  * 
- * controller class that manages buttons and other input related controls
+ * controller class that manages buttons and other
+ * input related controls
  * 
  *
  */
@@ -163,14 +161,15 @@ public class InputController extends MainController {
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
-		
+
+
 	}
 	
 	protected void addThisPCTreeItems(TreeItem<File> root) {
 		
 		try {
-			Image img = new Image(getClass().getResource("/resources/img/icon_folder.png").toURI()
-					.toString(), 16, 16, true, true);
+			Image img = new Image(getClass().getResource("/resources/img/icon_folder.png").toURI().toString(),
+					16, 16, true, true);
 			
 			for (File f : File.listRoots()) {
 				
@@ -202,7 +201,7 @@ public class InputController extends MainController {
 	 */
 	protected void displayFiles(File directory) {
 		
-		if (!directory.isDirectory()) {
+		if(!directory.isDirectory()) {
 			
 			System.out.println(directory.getName() + " is not a directory");
 			return;
@@ -216,7 +215,7 @@ public class InputController extends MainController {
 		controller.scrollPane_fileContainer.setContent(null);
 		controller.scrollPane_fileContainer.setHbarPolicy(ScrollBarPolicy.NEVER);
 		
-		for (File f : directory.listFiles()) {
+		for(File f : directory.listFiles()) {
 			
 			HBox hbox = new HBox(0);
 			
@@ -230,46 +229,49 @@ public class InputController extends MainController {
 			buttonText.append(name);
 			
 			// name --
-			while (buttonText.length() < 30) {
+			while(buttonText.length() < 30) {
 				buttonText.append(" ");
 			}
+		
 			
 			buttonText.append("|");
 			
 			buttonText.append(date);
 			
 			// name date --
-			while (buttonText.length() < 60) {
+			while(buttonText.length() < 60) {
 				buttonText.append(" ");
 			}
+		
 			
 			buttonText.append(extension);
 			
 			// name date extension --
-			while (buttonText.length() < 75) {
+			while(buttonText.length() < 75) {
 				buttonText.append(" ");
 			}
 			
 			buttonText.append(size);
 			
-			while (buttonText.length() < 100) {
+			while(buttonText.length() < 100) {
 				buttonText.append(" ");
 			}
 			
 			Button b = new Button(buttonText.toString());
+			
 			
 			b.setOnMouseClicked(new EventHandler<MouseEvent>() {
 				
 				@Override
 				public void handle(MouseEvent mouseEvent) {
 					
-					if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
+					if(mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
 						
-						if (mouseEvent.getClickCount() == 2) {
+						if(mouseEvent.getClickCount() == 2) {
 							
 							try {
 								
-								if (f.isDirectory()) {
+								if(f.isDirectory()) {
 									addBreadcrumb(f);
 									displayFiles(f);
 								} else {
@@ -306,20 +308,19 @@ public class InputController extends MainController {
 			@Override
 			public void handle(ActionEvent e) {
 				// TODO GET RID OF THIS LOOP
-				for (Node n : controller.hBox_breadcrumbs.getChildren()) {
+				for(Node n : controller.hBox_breadcrumbs.getChildren()) {
 					
 					n.setOnMouseClicked(new EventHandler<MouseEvent>() {
 						
 						@Override
 						public void handle(MouseEvent event) {
 							
-							for (int a = controller.hBox_breadcrumbs.getChildren().size() - 1; a > 0; a--) {
+							for(int a = controller.hBox_breadcrumbs.getChildren().size() - 1; a > 0; a--) {
 								
-								if (controller.hBox_breadcrumbs.getChildren().get(a) == b) {
+								if(controller.hBox_breadcrumbs.getChildren().get(a) == b) {
 									
-									controller.hBox_breadcrumbs.getChildren()
-											.remove(a + 1, controller.hBox_breadcrumbs.getChildren().size());
-									
+									controller.hBox_breadcrumbs.getChildren().remove(a+1, controller.hBox_breadcrumbs.getChildren().size());
+								
 								}
 							}
 							
@@ -335,4 +336,5 @@ public class InputController extends MainController {
 		controller.hBox_breadcrumbs.getChildren().add(b);
 	}
 	
+
 }
