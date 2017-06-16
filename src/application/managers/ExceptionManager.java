@@ -1,4 +1,4 @@
-package application;
+package application.managers;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -25,13 +25,13 @@ import javafx.stage.WindowEvent;
  * @author loucks
  *
  */
-public class ExceptionHandler {
+public class ExceptionManager {
 	
 	/**
 	 * TODO make a error dump file
 	 * @param e
 	 */
-	public ExceptionHandler() {
+	public ExceptionManager() {
 	}
 	
 	/**

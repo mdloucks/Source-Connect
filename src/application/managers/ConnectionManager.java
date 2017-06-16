@@ -1,4 +1,4 @@
-package application;
+package application.managers;
 
 import java.awt.AWTException;
 import java.awt.Desktop;

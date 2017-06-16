@@ -18,7 +18,7 @@
 
 <BorderPane fx:id="borderPane_main" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="1090.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainController">
    <top>
-      <VBox fx:id="vBox_menuBox" BorderPane.alignment="CENTER">
+      <VBox fx:id="vBox_menuBox" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" BorderPane.alignment="CENTER">
          <children>
             <MenuBar>
               <menus>
@@ -58,7 +58,7 @@
       </VBox>
    </top>
    <left>
-      <VBox fx:id="vBox_repositories" maxHeight="650.0" maxWidth="1.7976931348623157E308" minHeight="443.0" minWidth="-Infinity" prefHeight="650.0" prefWidth="213.0" BorderPane.alignment="CENTER">
+      <VBox fx:id="vBox_repositories" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="443.0" minWidth="-Infinity" prefHeight="650.0" prefWidth="213.0" BorderPane.alignment="CENTER">
          <opaqueInsets>
             <Insets />
          </opaqueInsets>
@@ -84,13 +84,13 @@
    <center>
       <VBox fx:id="vBox_mainContainer" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
          <children>
-            <HBox fx:id="hBox_breadcrumbs" prefHeight="53.0" prefWidth="877.0" />
+            <HBox fx:id="hBox_breadcrumbs" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="53.0" prefWidth="877.0" />
             <HBox fx:id="hBox_fileInfo" prefHeight="31.0" prefWidth="840.0">
                <children>
-                  <Button fx:id="button_fileName" mnemonicParsing="false" prefHeight="31.0" prefWidth="273.0" text="Name" />
-                  <Button fx:id="button_fileModified" mnemonicParsing="false" prefHeight="31.0" prefWidth="240.0" text="Date Modified" />
-                  <Button fx:id="button_fileType" mnemonicParsing="false" prefHeight="31.0" prefWidth="160.0" text="File Type" />
-                  <Button fx:id="button_fileSize" mnemonicParsing="false" prefHeight="25.0" prefWidth="189.0" text="Size" />
+                  <Button fx:id="button_fileName" mnemonicParsing="false" onAction="#sortFilesByName" prefHeight="31.0" prefWidth="273.0" text="Name" />
+                  <Button fx:id="button_fileModified" mnemonicParsing="false" onAction="#sortFilesByDate" prefHeight="31.0" prefWidth="240.0" text="Date Modified" />
+                  <Button fx:id="button_fileType" mnemonicParsing="false" onAction="#sortFilesByType" prefHeight="31.0" prefWidth="160.0" text="File Type" />
+                  <Button fx:id="button_fileSize" mnemonicParsing="false" onAction="#sortFilesBySize" prefHeight="25.0" prefWidth="189.0" text="Size" />
                </children>
             </HBox>
             <ScrollPane fx:id="scrollPane_fileContainer" prefHeight="454.0" prefWidth="877.0" />

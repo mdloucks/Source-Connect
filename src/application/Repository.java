@@ -1,30 +1,30 @@
 package application;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
+import application.managers.TreeManager;
+import controllers.MainController;
 import javafx.stage.DirectoryChooser;
 
 public class Repository {
 
 	private String path = "";
-
 	
 	/**
 	 * open a file explorer and have the user choose a repository location
 	 * this creates a sc.conf file in this application that points to that file path
 	 * and it also creates another sc.conf file in their selected directory
 	 */
-	public Repository() {
+	public Repository(MainController controller) {
 		
 		System.out.println("initializing repository...");
-				
+
 		// choose a folder
 		DirectoryChooser dc = new DirectoryChooser();
 		dc.setTitle("new repository");
 		
-		ConfigFile mainConfig = new ConfigFile("sc.conf");
+		MasterConfiguration mainConfig = new MasterConfiguration("sc.conf");
 		File repository = dc.showDialog(null);
 		path = repository.getAbsolutePath();
 		
@@ -39,8 +39,10 @@ public class Repository {
 			
 								
 			// Repository config file
-			ConfigFile repConfig = new ConfigFile(path + "/sc-local.conf", ConfigFile.Type.REP);
+			RepositoryConfiguration repConfig = new RepositoryConfiguration(path + "/sc-local.conf");
 			repConfig.indexFiles();
+			
+			TreeManager.addLocalRepositoryTreeItem(controller, controller.localRoot, repository);
 			
 		} else {
 			System.err.println("Directory " + path + " is invalid.");

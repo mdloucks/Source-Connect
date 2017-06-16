@@ -11,7 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-public class PopupController implements Initializable {
+public class ConfirmationController implements Initializable {
 	
 	public boolean didConfirm;
 	
@@ -34,7 +34,7 @@ public class PopupController implements Initializable {
 	protected Button button_confirm;
 	
 	
-	public PopupController() {
+	public ConfirmationController() {
 		
 	}
 	

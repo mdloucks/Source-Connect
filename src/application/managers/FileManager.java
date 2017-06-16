@@ -1,4 +1,4 @@
-package application;
+package application.managers;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -6,8 +6,12 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+
+import application.MasterConfiguration;
 
 /**
  * 
@@ -33,7 +37,7 @@ public class FileManager {
 		
 		String[] fileArray;
 		File currentFile;
-		ConfigFile config = new ConfigFile("sc.conf");
+		MasterConfiguration config = new MasterConfiguration("sc.conf");
 		
 		// Files
 		fileArray = config.readKeyValue("REPOSITORY");
@@ -59,7 +63,7 @@ public class FileManager {
 	 * @return all of the files in a given directory
 	 */
 	public static ArrayList<File> getFiles(File directory) {
-
+		System.out.println("getting files for " + directory.getAbsolutePath());
 	    // get all the files from a directory
 	    File[] fList = directory.listFiles();
 	    ArrayList<File> files = new ArrayList<File>();
@@ -129,7 +133,8 @@ public class FileManager {
 		}
 		targetFile.delete();
 		
-	 */
+	}
+	 
 	public static String getExtension(File f) {
 				
 		int i = f.getAbsolutePath().lastIndexOf('.');
@@ -160,6 +165,71 @@ public class FileManager {
 	}
 	
 	/**
+	 * takes an array of files to be sorted by their names
+	 * 
+	 * @param files
+	 * @return
+	 */
+	public static File[] getSortedByName(File files[]) {
+		File listed[] = files;
+		Collections.sort(Arrays.asList(listed));
+		return listed;
+	}
+	
+	public static File[] getSortedByDate(File files[]) {
+		File listed[] = files;
+		Arrays.sort(listed, (a, b) -> Long.compare(a.lastModified(), b.lastModified()));
+		return listed;
+	}
+	
+	public static File[] getSortedBySize(File files[]) {
+		File listed[] = files;
+		Arrays.sort(listed, (a, b) -> Long.compare(a.length(), b.length()));
+		return listed;
+	}
+	
+	// TODO fix this
+	public static File[] getSortedByExt(File files[]) {
+		
+		String fileNames[] = new String[files.length];
+		
+		for (int a = 0; a < files.length; a++) {
+			fileNames[a] = files[a].getName();
+		}
+		
+		Arrays.sort(fileNames, new Comparator<String>() {
+		    @Override
+		    public int compare(String s1, String s2) {
+		        // the +1 is to avoid including the '.' in the extension and to avoid exceptions
+		        // EDIT:
+		        // We first need to make sure that either both files or neither file
+		        // has an extension (otherwise we'll end up comparing the extension of one
+		        // to the start of the other, or else throwing an exception)
+		        final int s1Dot = s1.lastIndexOf('.');
+		        final int s2Dot = s2.lastIndexOf('.');
+		        if ((s1Dot == -1) == (s2Dot == -1)) { // both or neither
+		            s1 = s1.substring(s1Dot + 1);
+		            s2 = s2.substring(s2Dot + 1);
+		            return s1.compareTo(s2);
+		        } else if (s1Dot == -1) { // only s2 has an extension, so s1 goes first
+		            return -1;
+		        } else { // only s1 has an extension, so s1 goes second
+		            return 1;
+		        }
+		    }
+		});
+		
+		Arrays.fill(files, null);
+		
+		for(int a = 0; a < fileNames.length; a++) {
+			
+			files[a] = new File(fileNames[a]);
+		}
+		
+		return files;
+	}
+	
+	/**
 	 * goes to a given directory and makes a sc.conf file
 	 * 
 	 * @param path of creation
@@ -180,7 +250,7 @@ public class FileManager {
 				
 				pw = new PrintWriter(conf);
 				
-				pw.println("# This is the main configuration file for Source Connect repository control");
+				pw.println("");
 				pw.println("# Do not change any values presented in this file, unless you are sure of your intentions.");
 				pw.println();
 				pw.println("# Keywords");
@@ -225,7 +295,7 @@ public class FileManager {
 	 * 
 	 * @author Seth
 	 */
-	public static String readFileContent(String path) {
+	public static String getFileContent(String path) {
 		
 		String content = "";
 		

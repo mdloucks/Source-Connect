@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-import application.Main.OperatingSystem;
+import application.App.OperatingSystem;
 
 /**
  * the actual end class which takes the data from this machine and
@@ -31,7 +31,7 @@ public class Git {
 
 		System.out.println("executing command \"" + command + "\"");
 
-		switch (Main.OS) {
+		switch (App.OS) {
 
 		case Windows:
 
@@ -70,6 +70,15 @@ public class Git {
 			break;
 		}
 
+	}
+	
+	/**
+	 * 
+	 */
+	public static void removeRepository() {
+		
+		
+		
 	}
 
 	public static ArrayList<File> getRepositories() {
